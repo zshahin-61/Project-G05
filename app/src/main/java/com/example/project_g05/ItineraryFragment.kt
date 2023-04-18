@@ -7,6 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 
 
-class ItineraryFragment : Fragment() {
+class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
 
 }
