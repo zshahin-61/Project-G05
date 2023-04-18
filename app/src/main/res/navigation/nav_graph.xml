@@ -1,36 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/parkFragment">
-
+    app:startDestination="@id/parkDetailsFragment2">
     <fragment
-        android:id="@+id/itineraryFragment"
-        android:name="com.example.project_g05.ItineraryFragment"
-        android:label="fragment_itinerary"
-        tools:layout="@layout/fragment_itinerary" >
-        <argument
-            android:name="selectedNationalPark"
-            app:argType="com.example.project_g05.models.NationalPark"
-            app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/parkDetailsFragment"
+        android:id="@+id/parkDetailsFragment2"
         android:name="com.example.project_g05.ParkDetailsFragment"
         android:label="fragment_park_details"
         tools:layout="@layout/fragment_park_details" >
         <action
-            android:id="@+id/action_parkDetailsFragment_to_itineraryFragment"
-            app:destination="@id/itineraryFragment" />
+            android:id="@+id/action_parkDetailsFragment2_to_itineraryFragment2"
+            app:destination="@id/itineraryFragment2" />
     </fragment>
     <fragment
-        android:id="@+id/parkFragment"
-        android:name="com.example.project_g05.ParkFragment"
-        android:label="fragment_park"
-        tools:layout="@layout/fragment_park" >
-        <action
-            android:id="@+id/action_parkFragment_to_parkDetailsFragment"
-            app:destination="@id/parkDetailsFragment" />
-    </fragment>
+        android:id="@+id/itineraryFragment2"
+        android:name="com.example.project_g05.ItineraryFragment"
+        android:label="fragment_itinerary"
+        tools:layout="@layout/fragment_itinerary" />
 </navigation>

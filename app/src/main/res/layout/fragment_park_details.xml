@@ -2,10 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/cardview_light_background">
+    android:background="@color/cardview_light_background"
+    tools:context=".ParkDetailsFragment">
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
@@ -18,9 +21,8 @@
         app:layout_constraintBottom_toTopOf="@id/ivImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+       />
 
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"/>
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="0dp"
@@ -30,7 +32,9 @@
         app:srcCompat="@drawable/ic_launcher_background"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"/>
 
     <TextView
         android:id="@+id/tvAddressWebsite"
@@ -91,6 +95,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingBottom="16dp"/>
 
+    <Button
+        android:id="@+id/btnAddItinerary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Itinerary"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="16dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
