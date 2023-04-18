@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.ImageView
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -45,16 +46,17 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
             strAddress+="$address \n"
         binding.tvAddress.text = strAddress
 
-        //binding.tvWebsite.url = "Brand: ${args.argsFromPark?.brand}"
+        binding.tvWebsite.loadUrl(args.argsFromPark!!.url)
+
 
         val imageView: ImageView = binding.ivImage
 
         Glide.with(requireContext())
             .load(args.argsFromPark?.images)
-            .into(imageView);
+            .into(imageView)
 
 
-        Log.d(TAG, "Selected product from screen #1: ${args.argsFromPark}")
+        Log.d(TAG, "Selected park from screen #1: ${args.argsFromPark}")
 
     }
 
