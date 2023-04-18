@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.project_g05.databinding.FragmentParkDetailsBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
@@ -61,10 +63,30 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
         Log.d(TAG, "Selected park from screen #1: ${args.argsFromPark}")
 
         binding.btnAddItinerary.setOnClickListener(){
+
+            val db = Firebase.firestore
+            // Create a new document in Firestore
+            val itinerary = hashMapOf(
+                "parkName" to binding.tvTitle,
+                "address" to binding.tvAddress,
+                "tripDate" to "",
+                "notes" to ""
+            )
+            // Add the document to the "users" collection
+            db.collection("itinerary")
+                .add(itinerary)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(TAG, "Document was successfully added")
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, exception.message.toString())
+                }
+
+
             val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment(binding.tvTitle.text.toString(),
                binding.tvAddress.text.toString())
-            //val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
-            //findNavController().navigate(action)
+
+            findNavController().navigate(action)
         }
 
     }

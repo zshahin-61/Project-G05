@@ -74,8 +74,6 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
                             document.getString("notes") ?: "N/A"
                         )
                     )
-
-                    //Log.d("DocumentData", "First Name: $firstName, Last Name: $lastName, Age: $age")
                 }
                 itineraryAdapter = ItineraryListAdapter(itineraryList)
                 binding.rvItinerary.adapter = itineraryAdapter
@@ -84,6 +82,7 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
             }
             .addOnFailureListener { exception ->
                 // Handle the error
+                Log.d(TAG, exception.message.toString())
             }
 
 
