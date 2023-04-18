@@ -70,7 +70,7 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
                 "tripDate" to "",
                 "notes" to ""
             )
-            // Add the document to the "users" collection
+            // Add the document to the "itinerary" collection
             db.collection("itinerary")
                 .add(itinerary)
                 .addOnSuccessListener { documentReference ->
