@@ -42,10 +42,11 @@ class ParkFragment : Fragment() {
     private val TAG = "Map_Park"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        binding = FragmentParkBinding.inflate(inflater, container, false)
+        _binding = FragmentParkBinding.inflate(inflater, container, false)
+        binding = _binding!!
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
