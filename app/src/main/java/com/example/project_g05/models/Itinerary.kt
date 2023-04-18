@@ -6,7 +6,7 @@ import java.io.Serializable
 data class Itinerary(
    val parkName:String,
    val address:String,
-   val tripDate: Date,
+   val tripDate: String,
    val notes:String
 ): Serializable {}
 

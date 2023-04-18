@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.project_g05.adapter.ItineraryListAdapter
 import com.example.project_g05.databinding.FragmentItineraryBinding
 import com.example.project_g05.models.Itinerary
+import com.example.project_g05.models.NationalPark
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.type.Date
@@ -20,8 +23,9 @@ import com.google.type.Date
 
 class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
 
-    private val TAG:String = "Itinerary Fragmant"
+    private val TAG: String = "Itinerary Fragmant"
     lateinit var itineraryListAdapter: ItineraryListAdapter
+
     // binding variables
     private var _binding: FragmentItineraryBinding? = null
     private val binding get() = _binding!!
@@ -32,6 +36,11 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
 
     // Initialize Firestore
     private val db = Firebase.firestore
+
+    ///////
+    private lateinit var itineraryAdapter: ItineraryListAdapter
+    //private lateinit var rvItinerary: RecyclerView
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,14 +56,41 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var itineraryList = mutableListOf<Itinerary>()
 
+        //////////////retrieve from db
+        db.collection("itinerary")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+//                    val firstName = document.getString("first_name") ?: "N/A"
+//                    val lastName = document.getString("last_name") ?: "N/A"
+//                    val age = document.getLong("age") ?: "N/A"
+                    itineraryList.add(
+                        Itinerary(
+                            document.getString("parkName") ?: "N/A",
+                            document.getString("Address") ?: "N/A",
+                            document.getString("tripDate") ?: "N/A",
+                            document.getString("notes") ?: "N/A"
+                        )
+                    )
+
+                    //Log.d("DocumentData", "First Name: $firstName, Last Name: $lastName, Age: $age")
                 }
+                itineraryAdapter = ItineraryListAdapter(itineraryList)
+                binding.rvItinerary.adapter = itineraryAdapter
+                binding.rvItinerary.layoutManager = LinearLayoutManager(requireContext())
+
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+            }
+
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 }
