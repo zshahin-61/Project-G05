@@ -12,6 +12,10 @@
         <action
             android:id="@+id/action_parkDetailsFragment2_to_itineraryFragment2"
             app:destination="@id/itineraryFragment" />
+        <argument
+            android:name="argsFromPark"
+            app:argType="com.example.project_g05.models.NationalPark"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/itineraryFragment"
