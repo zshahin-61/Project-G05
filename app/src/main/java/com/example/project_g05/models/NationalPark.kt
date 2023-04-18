@@ -6,8 +6,8 @@ data class NationalPark(
     val fullName:String,
     val description :String,
     val url :String,
-    val latitude :String,
-    val longitude :String,
+    val latitude :Double,
+    val longitude :Double,
     val addresses :MutableList<String>,
     val images :MutableList<String>
 ):Serializable{}
