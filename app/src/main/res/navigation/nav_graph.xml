@@ -3,7 +3,7 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/parkDetailsFragment">
+    app:startDestination="@id/parkFragment">
     <fragment
         android:id="@+id/parkDetailsFragment"
         android:name="com.example.project_g05.ParkDetailsFragment"
@@ -18,4 +18,12 @@
         android:name="com.example.project_g05.ItineraryFragment"
         android:label="fragment_itinerary"
         tools:layout="@layout/fragment_itinerary" />
+    <fragment
+        android:id="@+id/parkFragment"
+        android:name="com.example.project_g05.ParkFragment"
+        android:label="ParkFragment" >
+        <action
+            android:id="@+id/action_parkFragment_to_parkDetailsFragment"
+            app:destination="@id/parkDetailsFragment" />
+    </fragment>
 </navigation>

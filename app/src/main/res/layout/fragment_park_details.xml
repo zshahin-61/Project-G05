@@ -96,6 +96,16 @@
         android:paddingBottom="16dp"/>
 
     <Button
+        android:id="@+id/btnAddItinerary1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Itinerary"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="16dp"/>
+
+    <Button
         android:id="@+id/btnAddItinerary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

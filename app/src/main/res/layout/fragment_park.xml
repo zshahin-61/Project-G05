@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/MapList_Text_View"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="409dp"
+        android:layout_height="101dp"
         android:padding="16dp"
         android:text="Select Provience"
         android:textColor="#333333"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/MapList_Text_View"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintWidth_percent="0.0"
         android:padding="16dp" />
 
 
