@@ -10,7 +10,7 @@
         android:label="fragment_park_details"
         tools:layout="@layout/fragment_park_details" >
         <action
-            android:id="@+id/action_parkDetailsFragment2_to_itineraryFragment2"
+            android:id="@+id/action_parkDetailsFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
         <argument
             android:name="argsFromPark"

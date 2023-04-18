@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.project_g05.databinding.FragmentParkDetailsBinding
@@ -57,6 +58,13 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
 
 
         Log.d(TAG, "Selected park from screen #1: ${args.argsFromPark}")
+
+        binding.btnAddItinerary.setOnClickListener(){
+            val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
+            findNavController().navigate(action)
+
+        }
+
 
     }
 
