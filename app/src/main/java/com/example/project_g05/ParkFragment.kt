@@ -15,7 +15,6 @@ import com.example.project_g05.models.State
 import com.example.project_g05.networking.ApiService
 import com.example.project_g05.networking.RetrofitInstance
 import kotlinx.coroutines.launch
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -23,7 +22,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.project_g05.*
 import kotlin.Function
 import com.example.project_g05.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatActivity
@@ -51,7 +49,8 @@ class ParkFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var  toast = Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
+        var toast =
+            Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
         toast.show()
         Log.d(TAG, "We are in Map Screen")
 
@@ -60,48 +59,40 @@ class ParkFragment : Fragment() {
         val states = State.values()
         val stateNames = states.map { it.fullName }
         // Initialize the Spinner adapter
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, stateNames)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, stateNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
+        // Set item selection listener for spinner
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedState = states[position]
+            }
 
-// Initialize the Button
-        button = view.findViewById(R.id.findParksButton)
-        // Initialize the Button
-        button = view.findViewById(R.id.findParksButton)
-        button.setOnClickListener {
-            // Get the selected state from the Spinner
-            val selectedStateFullName = spinner.selectedItem as String
-            val selectedState = states.firstOrNull { it.fullName == selectedStateFullName }
-
-            // Show a Toast with the selected state
-            if (selectedState != null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Selected state: ${selectedState.name} (${selectedState.abbreviation})",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                // Get the park name for the selected state and show in Toast
-                val selectedPark = parkList.firstOrNull { it.fullName == selectedState.name }
-                if (selectedPark != null) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Park name: ${selectedPark.fullName}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "No park found for the selected state",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing
             }
         }
 
-
-
+        // Find Parks button click listener
+        binding.findParksButton.setOnClickListener {
+            if (selectedState != null) {
+                findParks(selectedState!!)
+            } else {
+                Toast.makeText(requireContext(), "Please choose a state", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+        private fun findParks(state: State) {
+            // Implement your logic to fetch parks data based on the selected state
+            // You can use the state parameter to filter parks data or make an API call
 
-}
+        }
+
+  }
