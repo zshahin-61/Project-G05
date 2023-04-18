@@ -62,9 +62,7 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
         binding.btnAddItinerary.setOnClickListener(){
             val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
             findNavController().navigate(action)
-
         }
-
 
     }
 
@@ -72,7 +70,5 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
         super.onDestroyView()
         _binding = null
     }
-
-
 
 }
