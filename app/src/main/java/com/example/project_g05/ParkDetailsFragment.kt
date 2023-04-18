@@ -1,5 +1,6 @@
 package com.example.project_g05
 
+import android.content.ClipData.Item
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -60,8 +61,10 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
         Log.d(TAG, "Selected park from screen #1: ${args.argsFromPark}")
 
         binding.btnAddItinerary.setOnClickListener(){
-            val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
-            findNavController().navigate(action)
+            val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment(binding.tvTitle.text.toString(),
+               binding.tvAddress.text.toString())
+            //val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
+            //findNavController().navigate(action)
         }
 
     }

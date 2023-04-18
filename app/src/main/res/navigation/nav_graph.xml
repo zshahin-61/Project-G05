@@ -21,7 +21,17 @@
         android:id="@+id/itineraryFragment"
         android:name="com.example.project_g05.ItineraryFragment"
         android:label="fragment_itinerary"
-        tools:layout="@layout/fragment_itinerary" />
+        tools:layout="@layout/fragment_itinerary" >
+        <action
+            android:id="@+id/action_itineraryFragment_to_editItineraryFragment"
+            app:destination="@id/editItineraryFragment" />
+        <argument
+            android:name="parkName"
+            app:argType="string" />
+        <argument
+            android:name="parkAddress"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/parkFragment"
         android:name="com.example.project_g05.ParkFragment"
@@ -29,5 +39,14 @@
         <action
             android:id="@+id/action_parkFragment_to_parkDetailsFragment"
             app:destination="@id/parkDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editItineraryFragment"
+        android:name="com.example.project_g05.EditItineraryFragment"
+        android:label="fragment_edit_itinerary"
+        tools:layout="@layout/fragment_edit_itinerary" >
+        <argument
+            android:name="argsSelectedItinerary"
+            app:argType="com.example.project_g05.models.Itinerary" />
     </fragment>
 </navigation>

@@ -30,5 +30,23 @@ class ItineraryListAdapter (context: Context, list: List<Itinerary>) :
         }
 
         return view
+
+
+//        // replace this view with a binding variable
+//
+//        var binding:ListItemPetBinding
+//                = ListItemPetBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+//
+//        val flower = getItem(position)
+//        flower?.let {
+//            binding.tvName.text = it.name
+//            binding.tvDetail.text = it.detail
+//            binding.imgPet.setImageResource(it.imgPet)
+//        }
+//
+//        return binding.root
+
+
+
     }
 }
