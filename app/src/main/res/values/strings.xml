@@ -2,11 +2,5 @@
     <string name="app_name">Project-G05</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="categories_array">
-        <item>SMARTPHONES</item>
-        <item>LAPTOPS</item>
-        <item>SKINCARE</item>
-        <item>GROCERIES</item>
-        <item>WOMENS-WATCHES</item>
-    </string-array>
-</resources>
+    <string name="select_state">Select a state</string>
+   </resources>
