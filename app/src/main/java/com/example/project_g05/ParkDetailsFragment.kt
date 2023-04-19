@@ -48,7 +48,7 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
             strAddress+="$address \n"
         binding.tvAddress.text = strAddress
 
-        binding.tvWebsite.loadUrl(args.argsFromPark!!.Url)
+        binding.tvWebsite.loadUrl(args.argsFromPark!!.url)
 
 
         val imageView: ImageView = binding.ivImage

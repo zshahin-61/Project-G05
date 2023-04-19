@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.project_g05.adapter.ItineraryListAdapter
 import com.example.project_g05.databinding.FragmentItineraryBinding
 import com.example.project_g05.models.Itinerary
 import com.google.firebase.firestore.ktx.firestore
@@ -52,9 +50,6 @@ class EditItineraryFragment : Fragment(R.layout.fragment_edit_itinerary) {
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-//                    val firstName = document.getString("first_name") ?: "N/A"
-//                    val lastName = document.getString("last_name") ?: "N/A"
-//                    val age = document.getLong("age") ?: "N/A"
                     itineraryList.add(
                         Itinerary(
                             document.getString("parkName") ?: "N/A",
