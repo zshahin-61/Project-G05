@@ -60,11 +60,11 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
 //                    val age = document.getLong("age") ?: "N/A"
                     itineraryList.add(
                         Itinerary(
-                            document.getString("parkId") ?: "N/A",
-                            document.getString("parkName") ?: "N/A",
-                            document.getString("address") ?: "N/A",
-                            document.getString("tripDate") ?: "N/A",
-                            document.getString("notes") ?: "N/A"
+                            document.id,
+                            document.getString("parkName") ?: "",
+                            document.getString("address") ?: "",
+                            document.getString("tripDate") ?: "",
+                            document.getString("notes") ?: ""
                         )
                     )
                 }

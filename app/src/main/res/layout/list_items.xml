@@ -8,7 +8,10 @@
         android:id="@+id/tvParkName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:textColor="@color/purple_700"
+        android:text="Title"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tvAddress"

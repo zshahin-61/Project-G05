@@ -1,5 +1,6 @@
 package com.example.project_g05
 
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,7 +10,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.project_g05.adapter.ImageAdapter
 import com.example.project_g05.databinding.FragmentParkDetailsBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,7 +28,10 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
 
     // TODO: safe args class property
     private val args: ParkDetailsFragmentArgs by navArgs()
-
+////////
+var recyclerView: RecyclerView? = null
+    var Manager: GridLayoutManager? = null
+    var adapter: ImageAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,11 +58,17 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
         binding.tvWebsite.loadUrl(args.argsFromPark!!.url)
 
 
-        val imageView: ImageView = binding.ivImage
+//        val imageView: ImageView = binding.ivImage
+//
+//        Glide.with(requireContext())
+//            .load(args.argsFromPark?.images)
+//            .into(imageView)
 
-        Glide.with(requireContext())
-            .load(args.argsFromPark?.images)
-            .into(imageView)
+        recyclerView = binding.rvDesign //.findViewById<View>(R.id.rv_design) as RecyclerView
+        Manager = GridLayoutManager(requireContext(),1)
+        recyclerView!!.layoutManager = Manager
+        adapter = ImageAdapter(requireContext())
+        recyclerView!!.adapter = adapter
 
 
         Log.d(TAG, "Selected park from screen #1: ${args.argsFromPark}")
@@ -65,11 +78,15 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
             val db = Firebase.firestore
             // Create a new document in Firestore
             val itinerary = hashMapOf(
+                "id" to args.argsFromPark!!.id,
                 "parkName" to binding.tvTitle,
                 "address" to binding.tvAddress,
                 "tripDate" to "",
                 "notes" to ""
             )
+
+
+            //val parkId = args.argsFromPark!!.id
             // Add the document to the "itinerary" collection
             db.collection("itinerary")
                 .add(itinerary)
