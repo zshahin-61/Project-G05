@@ -91,6 +91,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                 // Do nothing
             }
         }
+        Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
 
         // setup the map
         val mapFragment = childFragmentManager.findFragmentById(binding.fragmentMap.id) as? SupportMapFragment
@@ -101,12 +102,16 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         else {
             Log.d(TAG, "++++ map fragment is NOT null")
             mapFragment?.getMapAsync(this)
+            Toast.makeText(requireContext(), "googleMap.${this}. loading", Toast.LENGTH_SHORT).show()
+
         }
 
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
             if (selectedState != null) {
+                Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
+
                 findParks(selectedState!!)
             } else {
                 Toast.makeText(requireContext(), "Please choose a state", Toast.LENGTH_SHORT).show()
@@ -128,7 +133,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "+++ Map callback is executing...")
         this.mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "googleMap... loading", Toast.LENGTH_SHORT).show()
 
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         mMap.isTrafficEnabled = true
