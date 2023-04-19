@@ -1,7 +1,11 @@
 package com.example.project_g05
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
@@ -27,10 +31,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
+import com.google.android.material.snackbar.Snackbar
+import java.util.*
+import android.location.*
+import android.os.Build
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.google.android.gms.maps.model.Marker
 
-class ParkFragment : Fragment(), OnMapReadyCallback {
+
+class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
 
     // TODO: Class property for location manager
     private lateinit var locationManager: LocationManager
@@ -42,6 +54,10 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private lateinit var apiKey: String
     private lateinit var apiService: ApiService
     private lateinit var mMap: GoogleMap
+    // TODO: Class properties for permissions
+    private val REQUEST_PERMISSION_CODE = 1234
+    private val REQUIRED_PERMISSIONS_LIST
+            = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION)
 
     private lateinit var parkList: List<NationalPark>
     private lateinit var stateList: List<State>
@@ -67,9 +83,13 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "We are in Map Screen")
         locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+
+        // Initialize the Spinner adapter
+
         spinner = view.findViewById(R.id.spinner)
         val states = State.values()
-        val stateNames = states.map { it.fullName }
+        val stateNames = mutableListOf("Select State")
+        stateNames.addAll(states.map { it.fullName })
         // Initialize the Spinner adapter
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, stateNames)
@@ -84,13 +104,16 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                 position: Int,
                 id: Long
             ) {
-                selectedState = states[position]
+                // Update the selected state based on the position
+                selectedState = if (position > 0) states[position - 1] else null
+               // selectedState = states[position]
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Do nothing
             }
         }
+      //  Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
 
         // setup the map
         val mapFragment = childFragmentManager.findFragmentById(binding.fragmentMap.id) as? SupportMapFragment
@@ -101,41 +124,44 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         else {
             Log.d(TAG, "++++ map fragment is NOT null")
             mapFragment?.getMapAsync(this)
+            Toast.makeText(requireContext(), "googleMap.${this}. loading", Toast.LENGTH_SHORT).show()
+
         }
 
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
-            if (selectedState != null) {
-                findParks(selectedState!!)
-            } else {
-                Toast.makeText(requireContext(), "Please choose a state", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+            if (allPermissionsGranted() == true) {
+                if (selectedState != null) {
+                    Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
 
-
-    fun allPermissionsGranted():Boolean {
-        if ((ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            && (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-            return true
+                    findParks(selectedState!!)
+                } else {
+                    Toast.makeText(requireContext(), "Please choose a state", Toast.LENGTH_SHORT).show()
+                }
+            getDeviceCurrentLocation()
+        } else {
+            // The else executes if:
+            // - this is the first time the user has installed the application
+            // - this is the first time they're clicking on that GET LOCATION BUTTOn
+            // - in the past, the user selected "only this time" in the permission popup box
+            requestPermissions(REQUIRED_PERMISSIONS_LIST, REQUEST_PERMISSION_CODE)
         }
-        else {
-            return false
+
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "+++ Map callback is executing...")
         this.mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "googleMap.${ this.mMap}. loading", Toast.LENGTH_SHORT).show()
 
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         mMap.isTrafficEnabled = true
         val uiSettings = googleMap.uiSettings
         uiSettings.isZoomControlsEnabled = true
         uiSettings.isCompassEnabled = true
-        val intialLocation = LatLng(43.6426, -79.3871)
+       val intialLocation = LatLng(43.6426, -79.3871)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(intialLocation, 2.0f))
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
@@ -201,7 +227,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
         // Animate camera to fit all markers within bounds
         val bounds = boundsBuilder.build()
-        val padding = 200
+        val padding = 10
         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
         mMap.animateCamera(cameraUpdate)
     }
@@ -214,6 +240,100 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // --------------------------------------
+    // TODO: permissions helper functions
+    // --------------------------------------
+
+    fun allPermissionsGranted():Boolean {
+        if ((ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            && (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            Log.d(TAG, "+++++++TODO Do something here.....")
+            if (allPermissionsGranted() === true) {
+                Log.d(TAG, "+++++++ User selected ALLOW (or Allow THis time")
+                this.getDeviceCurrentLocation()
+            }
+            else {
+                Log.d(TAG, "+++++++ User selected DENY")
+                val snackbar = Snackbar.make(binding.fragmentMap, "FAILURE: No permissions granted", Snackbar.LENGTH_SHORT)
+                snackbar.show()
+
+            }
+
+        }
+
+    }
+
+    // --------------------------------------
+    // TODO: location helper functions
+    // --------------------------------------
+    @SuppressLint("MissingPermission")
+    private fun getDeviceCurrentLocation() {
+        Log.d(TAG, "+++++ Attemping to get location")
+        // initialize the location manager class property
+        this.locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        // subscribe to location updates
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+    }
+    // Function to request location permissions
+    private fun requestLocationUpdates() {
+        requestPermissions(
+            REQUIRED_PERMISSIONS_LIST,
+            REQUEST_PERMISSION_CODE
+        )
+    }
+    override fun onLocationChanged(location: Location) {
+        Log.d(TAG, "+++ Location update detected")
+        val lat = location.latitude
+        val lng = location.longitude
+      //binding.tvCoordinates.text = "Latitude: ${lat}, Longitude: ${lng}"
+        Toast.makeText(requireContext(), "googleMap.${ this.mMap}. loading", Toast.LENGTH_SHORT).show()
+        Log.d(TAG,  "+++ Latitude: ${lat}, Longitude: ${lng}")
+
+        // get the human readable addres (geocoding)
+        val mGeocoder:Geocoder = Geocoder(requireContext(), Locale.getDefault())
+        val addressResultsList = mGeocoder.getFromLocation(lat, lng, 1)
+        if (addressResultsList == null || addressResultsList.size == 0) {
+            Log.d(TAG, "No matching addresses found")
+          //  binding.tvCoordinates.text = "No matching address found."
+
+        }
+        else {
+            val currAddress:Address = addressResultsList.get(0)
+            Log.d(TAG, "Address: ${currAddress.getAddressLine(0)}")
+            Log.d(TAG, "Address: ${currAddress.locality}")
+            Log.d(TAG, "Address: ${currAddress.countryName}")
+
+            // output to the ui
+           // binding.tvCoordinates.text = "Address: ${currAddress.getAddressLine(0)}"
+        }
+
+
+        // move the map to the person's current location
+        // add a marker
+        val userLocationAsCoordinate = LatLng(lat, lng)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocationAsCoordinate, 2.0f))
+        // remove any pre-existing markers
+        mMap.clear()
+        // add a new marker on the user's position
+        mMap.addMarker(MarkerOptions().position(userLocationAsCoordinate).title("You are here"))
     }
 
 

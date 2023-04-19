@@ -30,18 +30,17 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.container1) as NavHostFragment
         this.navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        setupWithNavController(findViewById<BottomNavigationView>(R.id.bottomNavigationView), navController)
 
+      //  setupWithNavController(findViewById<BottomNavigationView>(R.id.bottomNavigationView), navController)
+
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+        val bottomNav = binding.bottomNavigationView
+        setupWithNavController(bottomNav, navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.bottom_menu_option, menu)
-        return true
-    }
+
 }
