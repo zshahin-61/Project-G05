@@ -1,10 +1,12 @@
 package com.example.project_g05
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 
 class ParkFragment : Fragment(), OnMapReadyCallback {
 
@@ -45,7 +48,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentParkBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -99,91 +101,95 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap loooding", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
 
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
             val park = parkList.find { it.fullName == marker.title }
             if (park != null) {
-                // Navigate to View Park Details screen with the selected park data
-                val action =
-                    ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
+                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
                 findNavController().navigate(action)
-
-                true
-            } else {
-                false
             }
+            true
         }
 
         // Set up map click listener
         mMap.setOnMapClickListener {
-            // Clear all markers
-            mMap.clear()
+            // Hide soft keyboard when map is clicked
+            hideSoftKeyboard()
         }
     }
 
-
     private fun findParks(state: State) {
+        // Hide soft keyboard
+        hideSoftKeyboard()
+
+        apiService = RetrofitInstance.retrofitService
+
+
+
+        // Make API call to get parks by state
         lifecycleScope.launch {
             try {
-                apiService = RetrofitInstance.retrofitService
-
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
 
                 if (response.isSuccessful) {
-                    val parks = response.body()?.data
-
-                    if (parks != null) {
-                        parkList = parks
-
-                        // Add markers on map for each national park
-                        for (park in parkList) {
-                            val latLng = LatLng(park.latitude, park.longitude)
-                            mMap.addMarker(
-                                MarkerOptions()
-                                    .position(latLng)
-                                    .title(park.fullName)
-                            )
-                        }
-
-                        // Set map camera position to fit all markers
-                        val builder = LatLngBounds.builder()
-                        for (park in parkList) {
-                            builder.include(LatLng(park.latitude, park.longitude))
-                        }
-                        val bounds = builder.build()
-                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
-                        mMap.animateCamera(cameraUpdate)
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "No parks found for ${state.fullName}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    val usaNationalParks = response.body()
+                    parkList = usaNationalParks?.data ?: emptyList()
+                    showParksOnMap(parkList)
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Failed to fetch parks for ${state.fullName}",
+                        "Failed to fetch parks",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "Error fetching parks: ${e.localizedMessage}")
                 Toast.makeText(
                     requireContext(),
-                    "Failed to fetch parks for ${state.fullName}",
+                    "Failed to fetch parks",
                     Toast.LENGTH_SHORT
                 ).show()
-                e.printStackTrace()
+            } finally {
+                // Hide progress bar
+
             }
         }
     }
 
+    private fun showParksOnMap(parks: List<NationalPark>) {
+        mMap.clear() // Clear existing markers on map
+        val boundsBuilder = LatLngBounds.builder() // Builder to calculate bounds for camera update
+
+        // Loop through each park and add marker to map
+        for (park in parks) {
+            val parkLatLng = LatLng(park.latitude, park.longitude)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(parkLatLng)
+                    .title(park.fullName)
+            )
+            boundsBuilder.include(parkLatLng) // Include park LatLng in bounds calculation
+        }
+
+        // Animate camera to fit all markers within bounds
+        val bounds = boundsBuilder.build()
+        val padding = 200
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+        mMap.animateCamera(cameraUpdate)
+    }
+
+    private fun hideSoftKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
 
