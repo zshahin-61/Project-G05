@@ -82,19 +82,9 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
-        if (mapFragment != null) {
-            mapFragment.getMapAsync { googleMap ->
-                mMap = googleMap
-                googleMap.setPadding(0, 100, 0, 0)
-                googleMap.uiSettings.isZoomControlsEnabled = true
-
-            }
-        } else {
-            Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
-            Log.e(TAG, "Map is null")
-        }
+        // Retrieve the SupportMapFragment from the layout and initialize the map
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
+        mapFragment?.getMapAsync(this) // set the OnMapReadyCallback to this fragment
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
@@ -105,6 +95,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -132,22 +123,17 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-              // apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 apiService = RetrofitInstance.retrofitService
 
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
-              //  Toast.makeText(requireContext(), "find the ${response} is loading", Toast.LENGTH_SHORT).show()
 
                 if (response.isSuccessful) {
-                       Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"${response}")
-
                     val parks = response.body()?.data
 
-                    Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
 
@@ -162,31 +148,38 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                         }
 
                         // Set map camera position to fit all markers
-                        val builder = LatLngBounds.Builder()
+                        val builder = LatLngBounds.builder()
                         for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
-                            builder.include(latLng)
+                            builder.include(LatLng(park.latitude, park.longitude))
                         }
                         val bounds = builder.build()
-
-                        val padding =16
-                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
                         mMap.animateCamera(cameraUpdate)
                     } else {
-                        Toast.makeText(requireContext(), "No parks found", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(
+                            requireContext(),
+                            "No parks found for ${state.fullName}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Failed to get parks data", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.e(TAG, "Failed to get parks data: ${response.code()}")
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to fetch parks for ${state.fullName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                Log.e(TAG, "Error: ${e.message}", e)
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to fetch parks for ${state.fullName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                e.printStackTrace()
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
