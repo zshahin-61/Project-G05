@@ -18,6 +18,8 @@ interface ApiService {
 //    @GET("api/v1/parks/?stateCode={stateCode}&api_key=ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b")
 //    suspend fun getUsaNationalParksbyState(@Path("stateCode") stateCode:String)
 //            : Response<UsaNationalParks>
+
+
   @GET("api/v1/parks?api_key=ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b")
   suspend fun getUsaNationalParksbyState(@Query("stateCode") stateCode:String): Response<UsaNationalParks>
 

@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
             })
             .build()
 
-        private const val BASE_URL =" https://developer.nps.gov"
+        private const val BASE_URL =" https://developer.nps.gov/api/v1/"
 
         private val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)

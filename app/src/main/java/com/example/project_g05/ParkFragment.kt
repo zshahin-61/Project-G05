@@ -138,11 +138,11 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                 val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation)
                 Toast.makeText(requireContext(), "Find ${state.abbreviation }parks is working", Toast.LENGTH_SHORT).show()
                 if (response.isSuccessful) {
-                    val parks = response.body()?.data
+                    val parks = response.body()?.nationalParks
                     if (parks != null) {
                         parkList = parks
                         for (park in parks) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            val latLng = LatLng(park.latitude, park.longitude)
                             mMap.addMarker(
                                 MarkerOptions().position(latLng).title(park.fullName)
                             )
@@ -180,7 +180,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun getLatLngBounds(parks: List<NationalPark>): LatLngBounds {
         val builder = LatLngBounds.Builder()
         for (park in parks) {
-            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+            val latLng = LatLng(park.latitude, park.longitude)
             builder.include(latLng)
         }
         return builder.build()
