@@ -51,10 +51,9 @@ import com.google.android.gms.maps.MapsInitializer
          binding = FragmentParkBinding.inflate(inflater, container, false)
 
          val mapView = rootView.findViewById<MapView>(R.id.mapFragment)
-         MapsInitializer.initialize(requireActivity())
+        // MapsInitializer.initialize(requireActivity())
          mapView.onCreate(savedInstanceState)
-         mapView.getMapAsync { googleMap ->
-         }
+         mapView.getMapAsync(this)
 
          return rootView
      }
@@ -97,18 +96,15 @@ import com.google.android.gms.maps.MapsInitializer
         }
 
         // Set up the map
+         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
+         if (mapFragment != null) {
+             mapFragment.getMapAsync(this)
+         } else {
+             Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
+             Log.e(TAG, "Map is null")
+         }
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
-        if (mapFragment != null) {
-            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-            mapFragment.getMapAsync(this)
-        }else{
-            Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
-            Log.e(TAG, "Map is null")
-
-        }
-
-        // Find Parks button click listener
+                 // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
             if (selectedState != null) {
                 findParks(selectedState!!)
