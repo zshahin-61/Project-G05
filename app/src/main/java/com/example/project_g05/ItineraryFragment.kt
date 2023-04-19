@@ -68,7 +68,7 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
                     itineraryList.add(
                         Itinerary(
                             document.getString("parkName") ?: "N/A",
-                            document.getString("Address") ?: "N/A",
+                            document.getString("address") ?: "N/A",
                             document.getString("tripDate") ?: "N/A",
                             document.getString("notes") ?: "N/A"
                         )
