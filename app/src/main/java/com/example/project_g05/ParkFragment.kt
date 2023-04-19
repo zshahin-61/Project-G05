@@ -145,7 +145,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                        Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
                     Log.d(TAG,"${response}")
 
-                    val parks = response.body()?.data
+                    val parks = response.body()?.nationalParks
                     Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
