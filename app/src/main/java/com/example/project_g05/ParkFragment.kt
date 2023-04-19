@@ -1,6 +1,8 @@
 package com.example.project_g05
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -28,6 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 
 class ParkFragment : Fragment(), OnMapReadyCallback {
+
+    // TODO: Class property for location manager
+    private lateinit var locationManager: LocationManager
 
     private var _binding: FragmentParkBinding? = null
     private lateinit var binding: FragmentParkBinding
@@ -84,9 +90,18 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        // Retrieve the SupportMapFragment from the layout and initialize the map
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as? SupportMapFragment
-        mapFragment?.getMapAsync(this) // set the OnMapReadyCallback to this fragment
+
+        // setup the map
+        val mapFragment = childFragmentManager.findFragmentById(binding.mapView.id) as? SupportMapFragment
+
+        if (mapFragment == null) {
+            Log.d(TAG, "++++ map fragment is null")
+        }
+        else {
+            Log.d(TAG, "++++ map fragment is NOT null")
+            mapFragment?.getMapAsync(this)
+        }
+
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
@@ -99,25 +114,39 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     }
 
 
+    fun allPermissionsGranted():Boolean {
+        if ((ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            && (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        Log.d(TAG, "+++ Map callback is executing...")
+
+        this.mMap = googleMap
         Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
 
+        mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        mMap.isTrafficEnabled = true
+        val uiSettings = googleMap.uiSettings
+        uiSettings.isZoomControlsEnabled = true
+        uiSettings.isCompassEnabled = true
+        val intialLocation = LatLng(43.6426, -79.3871)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(intialLocation, 2.0f))
         // Set up marker click listener
-        mMap.setOnMarkerClickListener { marker ->
-            val park = parkList.find { it.fullName == marker.title }
-            if (park != null) {
-                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
-                findNavController().navigate(action)
-            }
-            true
-        }
-
+//        mMap.setOnMarkerClickListener { marker ->
+//            val park = parkList.find { it.fullName == marker.title }
+//            if (park != null) {
+//                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
+//                findNavController().navigate(action)
+//            }
+//            true
+//        }
         // Set up map click listener
-        mMap.setOnMapClickListener {
-            // Hide soft keyboard when map is clicked
-            hideSoftKeyboard()
-        }
     }
 
     private fun findParks(state: State) {
