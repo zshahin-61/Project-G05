@@ -1,0 +1,548 @@
+Index: app/src/main/java/com/example/project_g05/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05\r\n\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_main)\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/MainActivity.kt b/app/src/main/java/com/example/project_g05/MainActivity.kt
+--- a/app/src/main/java/com/example/project_g05/MainActivity.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/MainActivity.kt	(date 1681788476454)
+@@ -2,10 +2,33 @@
+ 
+ import androidx.appcompat.app.AppCompatActivity
+ import android.os.Bundle
++import androidx.navigation.NavController
++import androidx.navigation.fragment.NavHostFragment
++import androidx.navigation.ui.AppBarConfiguration
++import androidx.navigation.ui.setupActionBarWithNavController
++import android.widget.Toast
++import androidx.navigation.ui.NavigationUI
++import androidx.navigation.ui.NavigationUI.setupWithNavController
++import androidx.navigation.ui.setupActionBarWithNavController
++import com.example.project_g05.databinding.ActivityMainBinding
+ 
+ class MainActivity : AppCompatActivity() {
++    private lateinit var binding: ActivityMainBinding
++    private lateinit var appBarConfiguration: AppBarConfiguration
++    private lateinit var navController: NavController
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
++
++        this.binding = ActivityMainBinding.inflate(layoutInflater)
++        setContentView(binding.root)
++
++        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container1) as NavHostFragment
++        this.navController = navHostFragment.navController
++        appBarConfiguration = AppBarConfiguration(navController.graph)
++        setupActionBarWithNavController(navController, appBarConfiguration)
++    }
++    override fun onSupportNavigateUp(): Boolean {
++        return navController.navigateUp() || super.onSupportNavigateUp()
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".MainActivity\">\r\n\r\n    <TextView\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Hello World!\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/res/layout/activity_main.xml	(date 1681784138976)
+@@ -6,13 +6,14 @@
+     android:layout_height="match_parent"
+     tools:context=".MainActivity">
+ 
+-    <TextView
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:text="Hello World!"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent" />
++    <!--    fragment container view-->
++    <androidx.fragment.app.FragmentContainerView
++        android:id="@+id/container1"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:name="androidx.navigation.fragment.NavHostFragment"
++        app:defaultNavHost="true"
++        app:navGraph="@navigation/nav_graph"/>
++
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/navigation/nav_graph.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n             xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n             android:id=\"@+id/nav_graph\">\r\n\r\n</navigation>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/navigation/nav_graph.xml b/app/src/main/res/navigation/nav_graph.xml
+--- a/app/src/main/res/navigation/nav_graph.xml	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/res/navigation/nav_graph.xml	(date 1681785367035)
+@@ -1,6 +1,36 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+-             xmlns:app="http://schemas.android.com/apk/res-auto"
+-             android:id="@+id/nav_graph">
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/nav_graph"
++    app:startDestination="@id/parkFragment">
+ 
++    <fragment
++        android:id="@+id/itineraryFragment"
++        android:name="com.example.project_g05.ItineraryFragment"
++        android:label="fragment_itinerary"
++        tools:layout="@layout/fragment_itinerary" >
++        <argument
++            android:name="selectedNationalPark"
++            app:argType="com.example.project_g05.models.NationalPark"
++            app:nullable="true" />
++    </fragment>
++    <fragment
++        android:id="@+id/parkDetailsFragment"
++        android:name="com.example.project_g05.ParkDetailsFragment"
++        android:label="fragment_park_details"
++        tools:layout="@layout/fragment_park_details" >
++        <action
++            android:id="@+id/action_parkDetailsFragment_to_itineraryFragment"
++            app:destination="@id/itineraryFragment" />
++    </fragment>
++    <fragment
++        android:id="@+id/parkFragment"
++        android:name="com.example.project_g05.ParkFragment"
++        android:label="fragment_park"
++        tools:layout="@layout/fragment_park" >
++        <action
++            android:id="@+id/action_parkFragment_to_parkDetailsFragment"
++            app:destination="@id/parkDetailsFragment" />
++    </fragment>
+ </navigation>
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">Project-G05</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n    <string name=\"hello_blank_fragment\">Hello blank fragment</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+--- a/app/src/main/res/values/strings.xml	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/res/values/strings.xml	(date 1681787939090)
+@@ -2,4 +2,11 @@
+     <string name="app_name">Project-G05</string>
+     <!-- TODO: Remove or change this placeholder text -->
+     <string name="hello_blank_fragment">Hello blank fragment</string>
++    <string-array name="categories_array">
++        <item>SMARTPHONES</item>
++        <item>LAPTOPS</item>
++        <item>SKINCARE</item>
++        <item>GROCERIES</item>
++        <item>WOMENS-WATCHES</item>
++    </string-array>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/networking/RetrofitInstance.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05.networking\r\n\r\nclass RetrofitInstance {\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/networking/RetrofitInstance.kt b/app/src/main/java/com/example/project_g05/networking/RetrofitInstance.kt
+--- a/app/src/main/java/com/example/project_g05/networking/RetrofitInstance.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/networking/RetrofitInstance.kt	(date 1681779515909)
+@@ -1,4 +1,39 @@
+ package com.example.project_g05.networking
+ 
+-class RetrofitInstance {
++import okhttp3.OkHttpClient
++import okhttp3.logging.HttpLoggingInterceptor
++import retrofit2.Retrofit
++import retrofit2.converter.gson.GsonConverterFactory
++
++object RetrofitInstance {
++
++
++    private val BASE_URL:String = "https://developer.nps.gov/"
++
++
++
++    // setup a client with logging
++    private val httpClient = OkHttpClient.Builder()
++        .addInterceptor(HttpLoggingInterceptor(
++            HttpLoggingInterceptor.Logger { message ->
++                println("LOG-APP: $message")
++            }).apply {
++            level= HttpLoggingInterceptor.Level.BODY
++        })
++        .build()
++
++
++    // instantiate a Retrofit instance with Moshi as the data converter
++    private val retrofit = Retrofit.Builder()
++        .addConverterFactory(GsonConverterFactory.create())
++        .baseUrl(BASE_URL)
++        .client(httpClient)
++        .build()
++
++    // update this to return an instance of the Retrofit instance associated
++    // with your base url
++    val retrofitService: ApiService by lazy {
++        retrofit.create(ApiService::class.java)
++    }
++
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/ParkFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/ParkFragment.kt b/app/src/main/java/com/example/project_g05/ParkFragment.kt
+new file mode 100644
+--- /dev/null	(date 1681788841029)
++++ b/app/src/main/java/com/example/project_g05/ParkFragment.kt	(date 1681788841029)
+@@ -0,0 +1,37 @@
++package com.example.project_g05
++
++import android.os.Bundle
++import android.util.Log
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.AdapterView
++import android.widget.ArrayAdapter
++import android.widget.Toast
++import androidx.fragment.app.Fragment
++import androidx.lifecycle.lifecycleScope
++import androidx.navigation.fragment.findNavController
++import com.example.project_g05.databinding.FragmentParkBinding
++import com.example.project_g05.networking.ApiService
++import com.example.project_g05.networking.RetrofitInstance
++import kotlinx.coroutines.launch
++
++class ParkFragment : Fragment() {
++     private var _binding: FragmentParkBinding? = null
++    private lateinit var binding:  FragmentParkBinding
++    private val TAG = "Map_Park"
++
++    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
++
++        binding = FragmentParkBinding.inflate(inflater, container, false)
++        return binding.root
++    }
++
++    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
++        super.onViewCreated(view, savedInstanceState)
++        var  toast = Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
++        toast.show()
++        Log.d(TAG, "We are in Map Screen")
++    }
++
++}
+\ No newline at end of file
+Index: app/src/main/res/layout/fragment_park.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_park.xml b/app/src/main/res/layout/fragment_park.xml
+new file mode 100644
+--- /dev/null	(date 1681788656444)
++++ b/app/src/main/res/layout/fragment_park.xml	(date 1681788656444)
+@@ -0,0 +1,30 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#F5F5F5">
++
++    <TextView
++        android:id="@+id/MapList_Text_View"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:padding="16dp"
++        android:text="Select Provience"
++        android:textColor="#333333"
++        android:textSize="30sp" />
++
++    <Spinner
++        android:id="@+id/MapCategorySpinner"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:background="#FFB1AC"
++        app:layout_constraintTop_toBottomOf="@+id/MapList_Text_View"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintWidth_percent="0.8"
++        android:padding="16dp" />
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n    id 'org.jetbrains.kotlin.android'\r\n    id 'androidx.navigation.safeargs.kotlin'\r\n    id 'com.google.gms.google-services'\r\n}\r\n\r\nandroid {\r\n    namespace 'com.example.project_g05'\r\n    compileSdk 33\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.project_g05\"\r\n        minSdk 24\r\n        targetSdk 33\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = '1.8'\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation 'androidx.core:core-ktx:1.7.0'\r\n    implementation 'androidx.appcompat:appcompat:1.6.1'\r\n    implementation 'com.google.android.material:material:1.8.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.5'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'\r\n    ////////////\r\n    // fragments\r\n    def fragment_version = \"1.5.4\"\r\n    implementation(\"androidx.fragment:fragment-ktx:$fragment_version\")\r\n\r\n    // jetpack navigation architecture components\r\n    def nav_version = \"2.5.3\"\r\n    implementation \"androidx.navigation:navigation-fragment-ktx:$nav_version\"\r\n    implementation \"androidx.navigation:navigation-ui-ktx:$nav_version\"\r\n\r\n    // retrofit\r\n    implementation 'com.squareup.retrofit2:retrofit:2.9.0'\r\n    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'\r\n    implementation \"com.squareup.okhttp3:logging-interceptor:4.9.3\"\r\n\r\n    // lifecycle\r\n    implementation \"androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1\"\r\n\r\n    // glide\r\n    implementation \"com.github.bumptech.glide:glide:4.15.1\"\r\n    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'\r\n\r\n    implementation(\"androidx.constraintlayout:constraintlayout:2.2.0-alpha09\")\r\n    // To use constraintlayout in compose\r\n    implementation(\"androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha09\")\r\n\r\n    /////////\r\n    implementation platform('com.google.firebase:firebase-bom:31.3.0')\r\n\r\n    // Import the Firebase BoM\r\n    implementation platform('com.google.firebase:firebase-bom:31.4.0')\r\n\r\n    // When using the BoM, you don't specify versions in Firebase library dependencies\r\n\r\n    // Add the dependency for the Firebase SDK for Google Analytics\r\n    //implementation 'com.google.firebase:firebase-analytics-ktx'\r\n\r\n    // TODO: Add the dependencies for any other Firebase products you want to use\r\n    // See https://firebase.google.com/docs/android/setup#available-libraries\r\n    // For example, add the dependencies for Firebase Authentication and Cloud Firestore\r\n    implementation 'com.google.firebase:firebase-auth-ktx'\r\n    implementation 'com.google.firebase:firebase-firestore-ktx'\r\n\r\n    implementation 'com.google.firebase:firebase-database:19.3.1'\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/build.gradle	(date 1681784042417)
+@@ -32,6 +32,12 @@
+     kotlinOptions {
+         jvmTarget = '1.8'
+     }
++    dataBinding {
++        enabled = true
++    }
++    buildFeatures {
++        viewBinding true
++    }
+ }
+ 
+ dependencies {
+@@ -60,6 +66,7 @@
+ 
+     // lifecycle
+     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
++    implementation 'androidx.cardview:cardview:1.0.0'
+ 
+     // glide
+     implementation "com.github.bumptech.glide:glide:4.15.1"
+@@ -87,4 +94,9 @@
+     implementation 'com.google.firebase:firebase-firestore-ktx'
+ 
+     implementation 'com.google.firebase:firebase-database:19.3.1'
++
++
++
++    // maps
++    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/ParkDetailsFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05\r\n\r\nimport android.os.Bundle\r\nimport androidx.fragment.app.Fragment\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\n\r\n// TODO: Rename parameter arguments, choose names that match\r\n// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER\r\nprivate const val ARG_PARAM1 = \"param1\"\r\nprivate const val ARG_PARAM2 = \"param2\"\r\n\r\n/**\r\n * A simple [Fragment] subclass.\r\n * Use the [ParkDetailsFragment.newInstance] factory method to\r\n * create an instance of this fragment.\r\n */\r\nclass ParkDetailsFragment : Fragment() {\r\n    // TODO: Rename and change types of parameters\r\n    private var param1: String? = null\r\n    private var param2: String? = null\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        arguments?.let {\r\n            param1 = it.getString(ARG_PARAM1)\r\n            param2 = it.getString(ARG_PARAM2)\r\n        }\r\n    }\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater, container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n        // Inflate the layout for this fragment\r\n        return inflater.inflate(R.layout.fragment_park_details, container, false)\r\n    }\r\n\r\n    companion object {\r\n        /**\r\n         * Use this factory method to create a new instance of\r\n         * this fragment using the provided parameters.\r\n         *\r\n         * @param param1 Parameter 1.\r\n         * @param param2 Parameter 2.\r\n         * @return A new instance of fragment ParkDetailsFragment.\r\n         */\r\n        // TODO: Rename and change types and number of parameters\r\n        @JvmStatic\r\n        fun newInstance(param1: String, param2: String) =\r\n            ParkDetailsFragment().apply {\r\n                arguments = Bundle().apply {\r\n                    putString(ARG_PARAM1, param1)\r\n                    putString(ARG_PARAM2, param2)\r\n                }\r\n            }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/ParkDetailsFragment.kt b/app/src/main/java/com/example/project_g05/ParkDetailsFragment.kt
+--- a/app/src/main/java/com/example/project_g05/ParkDetailsFragment.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/ParkDetailsFragment.kt	(date 1681779515782)
+@@ -6,54 +6,8 @@
+ import android.view.View
+ import android.view.ViewGroup
+ 
+-// TODO: Rename parameter arguments, choose names that match
+-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-private const val ARG_PARAM1 = "param1"
+-private const val ARG_PARAM2 = "param2"
+ 
+-/**
+- * A simple [Fragment] subclass.
+- * Use the [ParkDetailsFragment.newInstance] factory method to
+- * create an instance of this fragment.
+- */
+-class ParkDetailsFragment : Fragment() {
+-    // TODO: Rename and change types of parameters
+-    private var param1: String? = null
+-    private var param2: String? = null
++class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
+ 
+-    override fun onCreate(savedInstanceState: Bundle?) {
+-        super.onCreate(savedInstanceState)
+-        arguments?.let {
+-            param1 = it.getString(ARG_PARAM1)
+-            param2 = it.getString(ARG_PARAM2)
+-        }
+-    }
+ 
+-    override fun onCreateView(
+-        inflater: LayoutInflater, container: ViewGroup?,
+-        savedInstanceState: Bundle?
+-    ): View? {
+-        // Inflate the layout for this fragment
+-        return inflater.inflate(R.layout.fragment_park_details, container, false)
+-    }
+-
+-    companion object {
+-        /**
+-         * Use this factory method to create a new instance of
+-         * this fragment using the provided parameters.
+-         *
+-         * @param param1 Parameter 1.
+-         * @param param2 Parameter 2.
+-         * @return A new instance of fragment ParkDetailsFragment.
+-         */
+-        // TODO: Rename and change types and number of parameters
+-        @JvmStatic
+-        fun newInstance(param1: String, param2: String) =
+-            ParkDetailsFragment().apply {
+-                arguments = Bundle().apply {
+-                    putString(ARG_PARAM1, param1)
+-                    putString(ARG_PARAM2, param2)
+-                }
+-            }
+-    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/ItineraryFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05\r\n\r\nimport android.os.Bundle\r\nimport androidx.fragment.app.Fragment\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\n\r\n// TODO: Rename parameter arguments, choose names that match\r\n// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER\r\nprivate const val ARG_PARAM1 = \"param1\"\r\nprivate const val ARG_PARAM2 = \"param2\"\r\n\r\n/**\r\n * A simple [Fragment] subclass.\r\n * Use the [ItineraryFragment.newInstance] factory method to\r\n * create an instance of this fragment.\r\n */\r\nclass ItineraryFragment : Fragment() {\r\n    // TODO: Rename and change types of parameters\r\n    private var param1: String? = null\r\n    private var param2: String? = null\r\n\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        arguments?.let {\r\n            param1 = it.getString(ARG_PARAM1)\r\n            param2 = it.getString(ARG_PARAM2)\r\n        }\r\n    }\r\n\r\n    override fun onCreateView(\r\n        inflater: LayoutInflater, container: ViewGroup?,\r\n        savedInstanceState: Bundle?\r\n    ): View? {\r\n        // Inflate the layout for this fragment\r\n        return inflater.inflate(R.layout.fragment_itinerary, container, false)\r\n    }\r\n\r\n    companion object {\r\n        /**\r\n         * Use this factory method to create a new instance of\r\n         * this fragment using the provided parameters.\r\n         *\r\n         * @param param1 Parameter 1.\r\n         * @param param2 Parameter 2.\r\n         * @return A new instance of fragment ItineraryFragment.\r\n         */\r\n        // TODO: Rename and change types and number of parameters\r\n        @JvmStatic\r\n        fun newInstance(param1: String, param2: String) =\r\n            ItineraryFragment().apply {\r\n                arguments = Bundle().apply {\r\n                    putString(ARG_PARAM1, param1)\r\n                    putString(ARG_PARAM2, param2)\r\n                }\r\n            }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/ItineraryFragment.kt b/app/src/main/java/com/example/project_g05/ItineraryFragment.kt
+--- a/app/src/main/java/com/example/project_g05/ItineraryFragment.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/ItineraryFragment.kt	(date 1681779515729)
+@@ -6,54 +6,7 @@
+ import android.view.View
+ import android.view.ViewGroup
+ 
+-// TODO: Rename parameter arguments, choose names that match
+-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+-private const val ARG_PARAM1 = "param1"
+-private const val ARG_PARAM2 = "param2"
+-
+-/**
+- * A simple [Fragment] subclass.
+- * Use the [ItineraryFragment.newInstance] factory method to
+- * create an instance of this fragment.
+- */
+-class ItineraryFragment : Fragment() {
+-    // TODO: Rename and change types of parameters
+-    private var param1: String? = null
+-    private var param2: String? = null
+ 
+-    override fun onCreate(savedInstanceState: Bundle?) {
+-        super.onCreate(savedInstanceState)
+-        arguments?.let {
+-            param1 = it.getString(ARG_PARAM1)
+-            param2 = it.getString(ARG_PARAM2)
+-        }
+-    }
++class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
+ 
+-    override fun onCreateView(
+-        inflater: LayoutInflater, container: ViewGroup?,
+-        savedInstanceState: Bundle?
+-    ): View? {
+-        // Inflate the layout for this fragment
+-        return inflater.inflate(R.layout.fragment_itinerary, container, false)
+-    }
+-
+-    companion object {
+-        /**
+-         * Use this factory method to create a new instance of
+-         * this fragment using the provided parameters.
+-         *
+-         * @param param1 Parameter 1.
+-         * @param param2 Parameter 2.
+-         * @return A new instance of fragment ItineraryFragment.
+-         */
+-        // TODO: Rename and change types and number of parameters
+-        @JvmStatic
+-        fun newInstance(param1: String, param2: String) =
+-            ItineraryFragment().apply {
+-                arguments = Bundle().apply {
+-                    putString(ARG_PARAM1, param1)
+-                    putString(ARG_PARAM2, param2)
+-                }
+-            }
+-    }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/networking/ApiService.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05.networking\r\n\r\nclass ApiService {\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/networking/ApiService.kt b/app/src/main/java/com/example/project_g05/networking/ApiService.kt
+--- a/app/src/main/java/com/example/project_g05/networking/ApiService.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/networking/ApiService.kt	(date 1681779515879)
+@@ -1,4 +1,22 @@
+ package com.example.project_g05.networking
+ 
+-class ApiService {
+-}
+\ No newline at end of file
++import com.example.project_g05.models.NationalPark
++import com.example.project_g05.models.UsaNationalParks
++import okhttp3.OkHttpClient
++import okhttp3.logging.HttpLoggingInterceptor
++import retrofit2.Response
++import retrofit2.Retrofit
++import retrofit2.converter.gson.GsonConverterFactory
++import retrofit2.http.GET
++import retrofit2.http.Path
++
++interface ApiService {
++
++    //////////////Golnaz apiCode : ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b
++
++    // url parameter variable --> Retrofit Param annotion
++    @GET("api/v1/parks/?stateCode={stateCode}&api_key={apiCode}")
++    suspend fun getUsaNationalParksbyState(@Path("stateCode") categoryName:String, @Path("apiCode") apiCode:String)
++            : Response<UsaNationalParks>
++
++}
+Index: app/src/main/java/com/example/project_g05/models/UsaNationalParks.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05.models\r\n\r\ndata class UsaNationalParks()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/models/UsaNationalParks.kt b/app/src/main/java/com/example/project_g05/models/UsaNationalParks.kt
+--- a/app/src/main/java/com/example/project_g05/models/UsaNationalParks.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/models/UsaNationalParks.kt	(date 1681779515840)
+@@ -1,3 +1,6 @@
+ package com.example.project_g05.models
+ 
+-data class UsaNationalParks()
++data class UsaNationalParks(
++  val state:String,
++  val nationalParks:MutableList<NationalPark>
++){}
+Index: app/src/main/java/com/example/project_g05/models/NationalPark.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05.models\r\n\r\ndata class NationalPark()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/models/NationalPark.kt b/app/src/main/java/com/example/project_g05/models/NationalPark.kt
+--- a/app/src/main/java/com/example/project_g05/models/NationalPark.kt	(revision 74c6fb14713e543cfb071a85edd18d3779ad06f9)
++++ b/app/src/main/java/com/example/project_g05/models/NationalPark.kt	(date 1681779515813)
+@@ -1,3 +1,13 @@
+ package com.example.project_g05.models
+ 
+-data class NationalPark()
++import java.io.Serializable
++
++data class NationalPark(
++    val fullName:String,
++    val description :String,
++    val url :String,
++    val latitude :String,
++    val longitude :String,
++    val addresses :MutableList<String>,
++    val images :MutableList<String>
++):Serializable{}

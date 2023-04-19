@@ -1,0 +1,320 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n    id 'org.jetbrains.kotlin.android'\r\n    id 'androidx.navigation.safeargs.kotlin'\r\n    id 'com.google.gms.google-services'\r\n}\r\n\r\nandroid {\r\n    namespace 'com.example.project_g05'\r\n    compileSdk 33\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.project_g05\"\r\n        minSdk 24\r\n        targetSdk 33\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n    kotlinOptions {\r\n        jvmTarget = '1.8'\r\n    }\r\n    dataBinding {\r\n        enabled = true\r\n    }\r\n    buildFeatures {\r\n        viewBinding true\r\n    }\r\n}\r\n\r\ndependencies {\r\n\r\n    implementation 'androidx.core:core-ktx:1.7.0'\r\n    implementation 'androidx.appcompat:appcompat:1.6.1'\r\n    implementation 'com.google.android.material:material:1.8.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.5'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'\r\n    ////////////\r\n    // fragments\r\n    def fragment_version = \"1.5.4\"\r\n    implementation(\"androidx.fragment:fragment-ktx:$fragment_version\")\r\n\r\n    // jetpack navigation architecture components\r\n    def nav_version = \"2.5.3\"\r\n    implementation \"androidx.navigation:navigation-fragment-ktx:$nav_version\"\r\n    implementation \"androidx.navigation:navigation-ui-ktx:$nav_version\"\r\n\r\n    // retrofit\r\n    implementation 'com.squareup.retrofit2:retrofit:2.9.0'\r\n    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'\r\n    implementation \"com.squareup.okhttp3:logging-interceptor:4.9.3\"\r\n\r\n    // lifecycle\r\n    implementation \"androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1\"\r\n    implementation 'androidx.cardview:cardview:1.0.0'\r\n\r\n    // glide\r\n    implementation \"com.github.bumptech.glide:glide:4.15.1\"\r\n    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'\r\n\r\n    implementation(\"androidx.constraintlayout:constraintlayout:2.2.0-alpha09\")\r\n    // To use constraintlayout in compose\r\n    implementation(\"androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha09\")\r\n\r\n    /////////\r\n    implementation platform('com.google.firebase:firebase-bom:31.3.0')\r\n\r\n    // Import the Firebase BoM\r\n    implementation platform('com.google.firebase:firebase-bom:31.4.0')\r\n\r\n    // When using the BoM, you don't specify versions in Firebase library dependencies\r\n\r\n    // Add the dependency for the Firebase SDK for Google Analytics\r\n    //implementation 'com.google.firebase:firebase-analytics-ktx'\r\n\r\n    // TODO: Add the dependencies for any other Firebase products you want to use\r\n    // See https://firebase.google.com/docs/android/setup#available-libraries\r\n    // For example, add the dependencies for Firebase Authentication and Cloud Firestore\r\n    implementation 'com.google.firebase:firebase-auth-ktx'\r\n    implementation 'com.google.firebase:firebase-firestore-ktx'\r\n\r\n    implementation 'com.google.firebase:firebase-database:19.3.1'\r\n\r\n\r\n\r\n    // maps\r\n    implementation 'com.google.android.gms:play-services-maps:18.1.0'\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision ffb80c0ccf818655394a47def62e70b5e08071bd)
++++ b/app/build.gradle	(date 1681792867018)
+@@ -35,6 +35,9 @@
+     dataBinding {
+         enabled = true
+     }
++    viewBinding {
++        enabled = true
++    }
+     buildFeatures {
+         viewBinding true
+     }
+Index: app/src/main/res/layout/fragment_park.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#F5F5F5\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/MapList_Text_View\"\r\n        android:layout_width=\"409dp\"\r\n        android:layout_height=\"101dp\"\r\n        android:padding=\"16dp\"\r\n        android:text=\"Select Provience\"\r\n        android:textColor=\"#333333\"\r\n        android:textSize=\"30sp\" />\r\n\r\n    <Spinner\r\n        android:id=\"@+id/MapCategorySpinner\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:background=\"#FFB1AC\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/MapList_Text_View\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintWidth_percent=\"0.0\"\r\n        android:padding=\"16dp\" />\r\n\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_park.xml b/app/src/main/res/layout/fragment_park.xml
+--- a/app/src/main/res/layout/fragment_park.xml	(revision ffb80c0ccf818655394a47def62e70b5e08071bd)
++++ b/app/src/main/res/layout/fragment_park.xml	(date 1681791113564)
+@@ -1,30 +1,41 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <androidx.constraintlayout.widget.ConstraintLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:background="#F5F5F5">
++    android:padding="16dp">
+ 
+     <TextView
+-        android:id="@+id/MapList_Text_View"
+-        android:layout_width="409dp"
+-        android:layout_height="101dp"
+-        android:padding="16dp"
+-        android:text="Select Provience"
+-        android:textColor="#333333"
+-        android:textSize="30sp" />
++        android:id="@+id/chooseState"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="Please choose a state"
++        app:layout_constraintBottom_toTopOf="@+id/spinner"
++        app:layout_constraintEnd_toEndOf="@+id/spinner"
++        app:layout_constraintStart_toStartOf="@+id/spinner" />
+ 
+     <Spinner
+-        android:id="@+id/MapCategorySpinner"
++        android:id="@+id/spinner"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:layout_marginBottom="16dp"
++        android:entries="@array/states"
++        app:layout_constraintBottom_toTopOf="@+id/findParksButton"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent" />
++
++    <Button
++        android:id="@+id/findParksButton"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+-        android:background="#FFB1AC"
+-        app:layout_constraintTop_toBottomOf="@+id/MapList_Text_View"
+-        app:layout_constraintStart_toStartOf="parent"
++        android:text="FIND PARKS"
++        app:layout_constraintBottom_toTopOf="@+id/guideline"
+         app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintWidth_percent="0.0"
+-        android:padding="16dp" />
++        app:layout_constraintStart_toStartOf="parent" />
++
+ 
+ 
+-</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+Index: app/src/main/java/com/example/project_g05/ParkFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05\r\n\r\nimport android.os.Bundle\r\nimport android.util.Log\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.AdapterView\r\nimport android.widget.ArrayAdapter\r\nimport android.widget.Toast\r\nimport androidx.fragment.app.Fragment\r\nimport androidx.lifecycle.lifecycleScope\r\nimport androidx.navigation.fragment.findNavController\r\nimport com.example.project_g05.databinding.FragmentParkBinding\r\nimport com.example.project_g05.networking.ApiService\r\nimport com.example.project_g05.networking.RetrofitInstance\r\nimport kotlinx.coroutines.launch\r\n\r\nclass ParkFragment : Fragment() {\r\n     private var _binding: FragmentParkBinding? = null\r\n    private lateinit var binding:  FragmentParkBinding\r\n    private val TAG = \"Map_Park\"\r\n\r\n    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {\r\n\r\n        binding = FragmentParkBinding.inflate(inflater, container, false)\r\n        return binding.root\r\n    }\r\n\r\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\r\n        super.onViewCreated(view, savedInstanceState)\r\n        var  toast = Toast.makeText(requireActivity().applicationContext, \"Screen Map\", Toast.LENGTH_LONG)\r\n        toast.show()\r\n        Log.d(TAG, \"We are in Map Screen\")\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/ParkFragment.kt b/app/src/main/java/com/example/project_g05/ParkFragment.kt
+--- a/app/src/main/java/com/example/project_g05/ParkFragment.kt	(revision ffb80c0ccf818655394a47def62e70b5e08071bd)
++++ b/app/src/main/java/com/example/project_g05/ParkFragment.kt	(date 1681794598229)
+@@ -5,20 +5,42 @@
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+-import android.widget.AdapterView
+-import android.widget.ArrayAdapter
+-import android.widget.Toast
++import android.widget.*
+ import androidx.fragment.app.Fragment
+ import androidx.lifecycle.lifecycleScope
+ import androidx.navigation.fragment.findNavController
+ import com.example.project_g05.databinding.FragmentParkBinding
++import com.example.project_g05.models.NationalPark
++import com.example.project_g05.models.State
+ import com.example.project_g05.networking.ApiService
+ import com.example.project_g05.networking.RetrofitInstance
+ import kotlinx.coroutines.launch
++import androidx.navigation.fragment.findNavController
++import com.google.android.gms.maps.CameraUpdateFactory
++import com.google.android.gms.maps.GoogleMap
++import com.google.android.gms.maps.OnMapReadyCallback
++import com.google.android.gms.maps.SupportMapFragment
++import com.google.android.gms.maps.model.LatLng
++import com.google.android.gms.maps.model.MarkerOptions
++import com.google.firebase.firestore.FirebaseFirestore
++import com.example.project_g05.*
++import kotlin.Function
++import com.example.project_g05.databinding.ActivityMainBinding
++import androidx.appcompat.app.AppCompatActivity
+ 
+ class ParkFragment : Fragment() {
++
+      private var _binding: FragmentParkBinding? = null
+     private lateinit var binding:  FragmentParkBinding
++    private lateinit var spinner: Spinner
++    private lateinit var button: Button
++    private lateinit var apiKey: String
++    private lateinit var apiService: ApiService
++    private lateinit var mMap: GoogleMap
++    private lateinit var parkList: List<NationalPark>
++    private lateinit var stateList: List<State>
++    private var selectedState: State? = null
++
+     private val TAG = "Map_Park"
+ 
+     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+@@ -32,6 +54,54 @@
+         var  toast = Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
+         toast.show()
+         Log.d(TAG, "We are in Map Screen")
++
++        val spinner = view.findViewById<Spinner>(R.id.spinner)
++
++        val states = State.values()
++        val stateNames = states.map { it.fullName }
++        // Initialize the Spinner adapter
++        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, stateNames)
++        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
++        spinner.adapter = adapter
++
++
++// Initialize the Button
++        button = view.findViewById(R.id.findParksButton)
++        // Initialize the Button
++        button = view.findViewById(R.id.findParksButton)
++        button.setOnClickListener {
++            // Get the selected state from the Spinner
++            val selectedStateFullName = spinner.selectedItem as String
++            val selectedState = states.firstOrNull { it.fullName == selectedStateFullName }
++
++            // Show a Toast with the selected state
++            if (selectedState != null) {
++                Toast.makeText(
++                    requireContext(),
++                    "Selected state: ${selectedState.name} (${selectedState.abbreviation})",
++                    Toast.LENGTH_SHORT
++                ).show()
++
++                // Get the park name for the selected state and show in Toast
++                val selectedPark = parkList.firstOrNull { it.fullName == selectedState.name }
++                if (selectedPark != null) {
++                    Toast.makeText(
++                        requireContext(),
++                        "Park name: ${selectedPark.fullName}",
++                        Toast.LENGTH_SHORT
++                    ).show()
++                } else {
++                    Toast.makeText(
++                        requireContext(),
++                        "No park found for the selected state",
++                        Toast.LENGTH_SHORT
++                    ).show()
++                }
++            }
++        }
++
++
++
+     }
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">Project-G05</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n    <string name=\"hello_blank_fragment\">Hello blank fragment</string>\r\n    <string-array name=\"categories_array\">\r\n        <item>SMARTPHONES</item>\r\n        <item>LAPTOPS</item>\r\n        <item>SKINCARE</item>\r\n        <item>GROCERIES</item>\r\n        <item>WOMENS-WATCHES</item>\r\n    </string-array>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+--- a/app/src/main/res/values/strings.xml	(revision ffb80c0ccf818655394a47def62e70b5e08071bd)
++++ b/app/src/main/res/values/strings.xml	(date 1681792684995)
+@@ -2,11 +2,5 @@
+     <string name="app_name">Project-G05</string>
+     <!-- TODO: Remove or change this placeholder text -->
+     <string name="hello_blank_fragment">Hello blank fragment</string>
+-    <string-array name="categories_array">
+-        <item>SMARTPHONES</item>
+-        <item>LAPTOPS</item>
+-        <item>SKINCARE</item>
+-        <item>GROCERIES</item>
+-        <item>WOMENS-WATCHES</item>
+-    </string-array>
+-</resources>
+\ No newline at end of file
++    <string name="select_state">Select a state</string>
++   </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/models/State.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/models/State.kt b/app/src/main/java/com/example/project_g05/models/State.kt
+new file mode 100644
+--- /dev/null	(date 1681792673228)
++++ b/app/src/main/java/com/example/project_g05/models/State.kt	(date 1681792673228)
+@@ -0,0 +1,64 @@
++package com.example.project_g05.models
++
++
++data class State(val name: String, val abbreviation: String) {
++    val fullName: String
++        get() = "$name ($abbreviation)"
++
++    companion object {
++        fun values(): Array<State> {
++            return arrayOf(
++                State("Alabama", "AL"),
++                State("Alaska", "AK"),
++                State("Arizona", "AZ"),
++                State("Arkansas", "AR"),
++                State("California", "CA"),
++                State("Colorado", "CO"),
++                State("Connecticut", "CT"),
++                State("Delaware", "DE"),
++                State("Florida", "FL"),
++                State("Georgia", "GA"),
++                State("Hawaii", "HI"),
++                State("Idaho", "ID"),
++                State("Illinois", "IL"),
++                State("Indiana", "IN"),
++                State("Iowa", "IA"),
++                State("Kansas", "KS"),
++                State("Kentucky", "KY"),
++                State("Louisiana", "LA"),
++                State("Maine", "ME"),
++                State("Maryland", "MD"),
++                State("Massachusetts", "MA"),
++                State("Michigan", "MI"),
++                State("Minnesota", "MN"),
++                State("Mississippi", "MS"),
++                State("Missouri", "MO"),
++                State("Montana", "MT"),
++                State("Nebraska", "NE"),
++                State("Nevada", "NV"),
++                State("New Hampshire", "NH"),
++                State("New Jersey", "NJ"),
++                State("New Mexico", "NM"),
++                State("New York", "NY"),
++                State("North Carolina", "NC"),
++                State("North Dakota", "ND"),
++                State("Ohio", "OH"),
++                State("Oklahoma", "OK"),
++                State("Oregon", "OR"),
++                State("Pennsylvania", "PA"),
++                State("Rhode Island", "RI"),
++                State("South Carolina", "SC"),
++                State("South Dakota", "SD"),
++                State("Tennessee", "TN"),
++                State("Texas", "TX"),
++                State("Utah", "UT"),
++                State("Vermont", "VT"),
++                State("Virginia", "VA"),
++                State("Washington", "WA"),
++                State("West Virginia", "WV"),
++                State("Wisconsin", "WI"),
++                State("Wyoming", "WY")
++            )
++        }
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/project_g05/networking/ApiService.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.project_g05.networking\r\n\r\nimport com.example.project_g05.models.NationalPark\r\nimport com.example.project_g05.models.UsaNationalParks\r\nimport okhttp3.OkHttpClient\r\nimport okhttp3.logging.HttpLoggingInterceptor\r\nimport retrofit2.Response\r\nimport retrofit2.Retrofit\r\nimport retrofit2.converter.gson.GsonConverterFactory\r\nimport retrofit2.http.GET\r\nimport retrofit2.http.Path\r\n\r\ninterface ApiService {\r\n\r\n    //////////////apiCode : ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b\r\n\r\n    // url parameter variable --> Retrofit Param annotion\r\n    @GET(\"api/v1/parks/?stateCode={stateCode}&api_key={apiCode}\")\r\n    suspend fun getUsaNationalParksbyState(@Path(\"stateCode\") categoryName:String, @Path(\"apiCode\") apiCode:String)\r\n            : Response<UsaNationalParks>\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/project_g05/networking/ApiService.kt b/app/src/main/java/com/example/project_g05/networking/ApiService.kt
+--- a/app/src/main/java/com/example/project_g05/networking/ApiService.kt	(revision ffb80c0ccf818655394a47def62e70b5e08071bd)
++++ b/app/src/main/java/com/example/project_g05/networking/ApiService.kt	(date 1681791283894)
+@@ -9,6 +9,7 @@
+ import retrofit2.converter.gson.GsonConverterFactory
+ import retrofit2.http.GET
+ import retrofit2.http.Path
++import retrofit2.http.Query
+ 
+ interface ApiService {
+ 
