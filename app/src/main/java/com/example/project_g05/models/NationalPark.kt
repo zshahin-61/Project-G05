@@ -9,5 +9,6 @@ data class NationalPark(
     val latitude :String,
     val longitude :String,
     val addresses :MutableList<AddressModel>,
-    val images :MutableList<ImageModel>
+    val images :MutableList<ImageModel>,
+    val id:String
 ):Serializable{}

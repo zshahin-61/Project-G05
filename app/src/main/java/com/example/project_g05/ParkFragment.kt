@@ -135,7 +135,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-               apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
+              // apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 apiService = RetrofitInstance.retrofitService
 
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
@@ -145,7 +145,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                        Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
                     Log.d(TAG,"${response}")
 
-                    val parks = response.body()?.nationalParks
+                    val parks = response.body()?.data
                     Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
