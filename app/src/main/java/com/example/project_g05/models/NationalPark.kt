@@ -5,9 +5,9 @@ import java.io.Serializable
 data class NationalPark(
     val fullName:String,
     val description :String,
-    val url :String,
+    val Url :String,
     val latitude :Double,
     val longitude :Double,
-    val addresses :MutableList<String>,
-    val images :MutableList<String>
+    val addresses :MutableList<AddressModel>,
+    val images :MutableList<ImageModel>
 ):Serializable{}
