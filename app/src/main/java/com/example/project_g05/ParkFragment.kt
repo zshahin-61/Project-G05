@@ -1,5 +1,6 @@
 package com.example.project_g05
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ParkFragment : Fragment(), OnMapReadyCallback {
 
@@ -86,12 +90,10 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         // Set up the map
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
         if (mapFragment != null) {
-            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
             mapFragment.getMapAsync(this)
-        }else{
+        } else {
             Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "Map is null")
-
         }
 
         // Find Parks button click listener
@@ -106,91 +108,70 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap loooding", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Map is ready", Toast.LENGTH_SHORT).show()
 
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
             val park = parkList.find { it.fullName == marker.title }
             if (park != null) {
-                // Navigate to View Park Details screen with the selected park data
-                val action =
-                    ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
-                findNavController().navigate(action)
 
-                true
-            } else {
-                false
+                val intent = Intent(requireContext(), ParkDetailsFragment::class.java)
+                intent.putExtra("park", park)
+                startActivity(intent)
             }
-        }
-
-        // Set up map click listener
-        mMap.setOnMapClickListener {
-            // Clear all markers
-            mMap.clear()
+            true
         }
     }
 
     private fun findParks(state: State) {
-        lifecycleScope.launch {
-            try {
-                Toast.makeText(requireContext(), "Find parks is working ${state.abbreviation}", Toast.LENGTH_SHORT).show()
+        val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
 
-                val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
-                // Fetch parks data from API
-                val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation)
-                Toast.makeText(requireContext(), "Find ${state.abbreviation }parks is working", Toast.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = apiService.getUsaNationalParksbyState(state.abbreviation)
                 if (response.isSuccessful) {
-                    val parks = response.body()?.nationalParks
-                    if (parks != null) {
-                        parkList = parks
-                        for (park in parks) {
-                            val latLng = LatLng(park.latitude, park.longitude)
-                            mMap.addMarker(
-                                MarkerOptions().position(latLng).title(park.fullName)
-                            )
-                        }
-                        // Zoom map to fit all markers
-                        mMap.animateCamera(
-                            CameraUpdateFactory.newLatLngBounds(getLatLngBounds(parks), 100)
-                        )
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "No parks found for selected state",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    val parks = response.body()?.data
+                    parkList = parks.orEmpty()
+                    withContext(Dispatchers.Main) {
+                        updateMapMarkers()
                     }
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to fetch parks data",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val errorBody = response.errorBody()?.string()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error: ${response.code()} $errorBody",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.e(TAG, "Failed to fetch parks: ${response.code()} $errorBody")
+                    }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error fetching parks data: ${e.localizedMessage}")
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to fetch parks data",
-                    Toast.LENGTH_SHORT
-                ).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "Failed to fetch parks: ${e.message}", e)
+                }
             }
         }
     }
 
 
-    private fun getLatLngBounds(parks: List<NationalPark>): LatLngBounds {
-        val builder = LatLngBounds.Builder()
-        for (park in parks) {
+
+    private fun updateMapMarkers() {
+        mMap.clear()
+        parkList.forEach { park ->
             val latLng = LatLng(park.latitude, park.longitude)
-            builder.include(latLng)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(park.fullName)
+            )
         }
-        return builder.build()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
+
