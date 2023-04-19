@@ -81,8 +81,7 @@ class ParkDetailsFragment : Fragment(R.layout.fragment_park_details) {
                 }
 
 
-            val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment(binding.tvTitle.text.toString(),
-               binding.tvAddress.text.toString())
+            val action = ParkDetailsFragmentDirections.actionParkDetailsFragmentToItineraryFragment()
 
             findNavController().navigate(action)
         }

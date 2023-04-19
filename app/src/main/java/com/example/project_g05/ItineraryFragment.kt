@@ -31,7 +31,7 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
     private val binding get() = _binding!!
 
     // TODO: safe args class property
-    private val args: ItineraryFragmentArgs by navArgs()
+    //private val args: ItineraryFragmentArgs by navArgs()
 
 
     // Initialize Firestore
@@ -39,7 +39,6 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
 
     ///////
     private lateinit var itineraryAdapter: ItineraryListAdapter
-    //private lateinit var rvItinerary: RecyclerView
 
 
     override fun onCreateView(

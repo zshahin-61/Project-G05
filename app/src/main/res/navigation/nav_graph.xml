@@ -33,12 +33,6 @@
         <action
             android:id="@+id/action_itineraryFragment_to_editItineraryFragment"
             app:destination="@id/editItineraryFragment" />
-        <argument
-            android:name="parkName"
-            app:argType="string" />
-        <argument
-            android:name="parkAddress"
-            app:argType="string" />
     </fragment>
 
     <fragment
