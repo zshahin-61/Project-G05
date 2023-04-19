@@ -29,10 +29,10 @@ class ParkFragment : Fragment(),  OnMapReadyCallback{
 
     private var _binding: FragmentParkBinding? = null
     private lateinit var binding: FragmentParkBinding
-    private lateinit var spinner: Spinner
-    private lateinit var button: Button
-    private lateinit var apiKey: String
-    private lateinit var apiService: ApiService
+  //  private lateinit var spinner: Spinner
+  //  private lateinit var button: Button
+ //   private lateinit var apiKey: String
+  //  private lateinit var apiService: ApiService
     private lateinit var mMap: GoogleMap
 
     private lateinit var parkList: List<NationalPark>
