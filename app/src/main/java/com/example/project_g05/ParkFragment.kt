@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,55 +14,44 @@ import com.example.project_g05.models.NationalPark
 import com.example.project_g05.models.State
 import com.example.project_g05.networking.ApiService
 import com.example.project_g05.networking.RetrofitInstance
-import com.google.android.gms.maps.*
 import kotlinx.coroutines.launch
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.MapsInitializer
- class ParkFragment : Fragment(),  OnMapReadyCallback {
+
+class ParkFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentParkBinding? = null
     private lateinit var binding: FragmentParkBinding
-  //  private lateinit var spinner: Spinner
-  //  private lateinit var button: Button
- //   private lateinit var apiKey: String
-  //  private lateinit var apiService: ApiService
+    private lateinit var spinner: Spinner
+    private lateinit var button: Button
+    private lateinit var apiKey: String
+    private lateinit var apiService: ApiService
     private lateinit var mMap: GoogleMap
 
     private lateinit var parkList: List<NationalPark>
     private lateinit var stateList: List<State>
     private var selectedState: State? = null
-    private lateinit var mapView: MapView
 
     private val TAG = "Map_Park"
 
-     override fun onCreateView(
-         inflater: LayoutInflater,
-         container: ViewGroup?,
-         savedInstanceState: Bundle?
-     ): View? {
-         // Inflate the root view
-         val rootView = inflater.inflate(R.layout.fragment_park, container, false)
-         // Inflate the binding
-         binding = FragmentParkBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-         val mapView = rootView.findViewById<MapView>(R.id.mapFragment)
-        // MapsInitializer.initialize(requireActivity())
-         mapView.onCreate(savedInstanceState)
-         mapView.getMapAsync(this)
+        binding = FragmentParkBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-         return rootView
-     }
-
-
-
-     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         val toast =
             Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
         toast.show()
@@ -96,15 +84,17 @@ import com.google.android.gms.maps.MapsInitializer
         }
 
         // Set up the map
-         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
-         if (mapFragment != null) {
-             mapFragment.getMapAsync(this)
-         } else {
-             Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
-             Log.e(TAG, "Map is null")
-         }
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
+        if (mapFragment != null) {
+            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+            mapFragment.getMapAsync(this)
+        }else{
+            Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "Map is null")
 
-                 // Find Parks button click listener
+        }
+
+        // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
             if (selectedState != null) {
                 findParks(selectedState!!)
@@ -143,7 +133,7 @@ import com.google.android.gms.maps.MapsInitializer
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-                val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
+                             val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 // Fetch parks data from API
                 val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation)
                 Toast.makeText(requireContext(), "Find ${state.abbreviation }parks is working", Toast.LENGTH_SHORT).show()
