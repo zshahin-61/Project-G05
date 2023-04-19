@@ -84,9 +84,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
 
         // Set up the map
-
-      //  val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
         if (mapFragment != null) {
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
@@ -96,7 +93,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             Log.e(TAG, "Map is null")
 
         }
-
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
@@ -138,14 +134,15 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         lifecycleScope.launch {
             try {
                 Toast.makeText(requireContext(), "Find parks is working", Toast.LENGTH_SHORT).show()
+                val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
 
                 // Fetch parks data from API
                 val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation, apiKey)
+                Toast.makeText(requireContext(), "Find ${state.abbreviation }parks is working", Toast.LENGTH_SHORT).show()
                 if (response.isSuccessful) {
                     val parks = response.body()?.nationalParks
                     if (parks != null) {
                         parkList = parks
-                        // Add markers on map for each park
                         for (park in parks) {
                             val latLng = LatLng(park.latitude, park.longitude)
                             mMap.addMarker(
