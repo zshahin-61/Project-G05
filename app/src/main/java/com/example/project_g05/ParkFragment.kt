@@ -146,13 +146,14 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                     Log.d(TAG,"${response}")
 
                     val parks = response.body()?.data
+
                     Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
 
                         // Add markers on map for each national park
                         for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            val latLng = LatLng(park.latitude, park.longitude)
                             mMap.addMarker(
                                 MarkerOptions()
                                     .position(latLng)
