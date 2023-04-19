@@ -137,11 +137,16 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             try {
                apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 apiService = RetrofitInstance.retrofitService
-                Toast.makeText(requireContext(), "find the ${state.abbreviation} is loading", Toast.LENGTH_SHORT).show()
 
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
+              //  Toast.makeText(requireContext(), "find the ${response} is loading", Toast.LENGTH_SHORT).show()
+
                 if (response.isSuccessful) {
+                       Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG,"${response}")
+
                     val parks = response.body()?.data
+                    Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
 
@@ -163,7 +168,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                         }
                         val bounds = builder.build()
 
-                        val padding = resources.getDimensionPixelSize(16)
+                        val padding =16
                         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
                         mMap.animateCamera(cameraUpdate)
                     } else {
