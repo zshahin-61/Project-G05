@@ -15,5 +15,12 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph"/>
 
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_menu_option"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
