@@ -133,7 +133,8 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-                Toast.makeText(requireContext(), "Find parks is working", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Find parks is working ${state.abbreviation}", Toast.LENGTH_SHORT).show()
+
                 val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 // Fetch parks data from API
                 val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation)
