@@ -6,6 +6,7 @@ data class State(val name: String, val abbreviation: String) {
         get() = "$name ($abbreviation)"
 
     companion object {
+        val SELECT_STATE = State("Select State", "")
         fun values(): Array<State> {
             return arrayOf(
                 State("Alabama", "AL"),

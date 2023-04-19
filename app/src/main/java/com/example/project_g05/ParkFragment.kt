@@ -1,11 +1,16 @@
 package com.example.project_g05
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,8 +28,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 
 class ParkFragment : Fragment(), OnMapReadyCallback {
+
+    // TODO: Class property for location manager
+    private lateinit var locationManager: LocationManager
 
     private var _binding: FragmentParkBinding? = null
     private lateinit var binding: FragmentParkBinding
@@ -82,19 +91,17 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
+        // setup the map
+        val mapFragment = childFragmentManager.findFragmentById(binding.mapView.id) as? SupportMapFragment
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
-        if (mapFragment != null) {
-            mapFragment.getMapAsync { googleMap ->
-                mMap = googleMap
-                googleMap.setPadding(0, 100, 0, 0)
-                googleMap.uiSettings.isZoomControlsEnabled = true
-
-            }
-        } else {
-            Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
-            Log.e(TAG, "Map is null")
+        if (mapFragment == null) {
+            Log.d(TAG, "++++ map fragment is null")
         }
+        else {
+            Log.d(TAG, "++++ map fragment is NOT null")
+            mapFragment.getMapAsync(this)
+        }
+
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
@@ -106,91 +113,108 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap loooding", Toast.LENGTH_SHORT).show()
 
+    fun allPermissionsGranted():Boolean {
+        if ((ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            && (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        Log.d(TAG, "+++ Map callback is executing...")
+        this.mMap = googleMap
+        Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
+
+        mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        mMap.isTrafficEnabled = true
+        val uiSettings = googleMap.uiSettings
+        uiSettings.isZoomControlsEnabled = true
+        uiSettings.isCompassEnabled = true
+        val intialLocation = LatLng(43.6426, -79.3871)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(intialLocation, 2.0f))
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
             val park = parkList.find { it.fullName == marker.title }
             if (park != null) {
-                // Navigate to View Park Details screen with the selected park data
-                val action =
-                    ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
+                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
                 findNavController().navigate(action)
-
-                true
-            } else {
-                false
             }
+            true
         }
-
         // Set up map click listener
-        mMap.setOnMapClickListener {
-            // Clear all markers
-            mMap.clear()
-        }
     }
 
     private fun findParks(state: State) {
+        // Hide soft keyboard
+        hideSoftKeyboard()
+
+        apiService = RetrofitInstance.retrofitService
+        // Make API call to get parks by state
         lifecycleScope.launch {
             try {
-              // apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
-                apiService = RetrofitInstance.retrofitService
-
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
-              //  Toast.makeText(requireContext(), "find the ${response} is loading", Toast.LENGTH_SHORT).show()
 
                 if (response.isSuccessful) {
-                       Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"${response}")
-
-                    val parks = response.body()?.data
-
-                    Log.d(TAG,"${parks}")
-                    if (parks != null) {
-                        parkList = parks
-
-                        // Add markers on map for each national park
-                        for (park in parkList) {
-                            val latLng = LatLng(park.latitude, park.longitude)
-                            mMap.addMarker(
-                                MarkerOptions()
-                                    .position(latLng)
-                                    .title(park.fullName)
-                            )
-                        }
-
-                        // Set map camera position to fit all markers
-                        val builder = LatLngBounds.Builder()
-                        for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
-                            builder.include(latLng)
-                        }
-                        val bounds = builder.build()
-
-                        val padding =16
-                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-                        mMap.animateCamera(cameraUpdate)
-                    } else {
-                        Toast.makeText(requireContext(), "No parks found", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    val usaNationalParks = response.body()
+                    parkList = usaNationalParks?.data ?: emptyList()
+                    showParksOnMap(parkList)
                 } else {
-                    Toast.makeText(requireContext(), "Failed to get parks data", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.e(TAG, "Failed to get parks data: ${response.code()}")
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to fetch parks",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                Log.e(TAG, "Error: ${e.message}", e)
+                Log.e(TAG, "Error fetching parks: ${e.localizedMessage}")
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to fetch parks",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } finally {
+                // Hide progress bar
+
             }
         }
+    }
+
+    private fun showParksOnMap(parks: List<NationalPark>) {
+        mMap.clear() // Clear existing markers on map
+        val boundsBuilder = LatLngBounds.builder() // Builder to calculate bounds for camera update
+
+        // Loop through each park and add marker to map
+        for (park in parks) {
+            val parkLatLng = LatLng(park.latitude, park.longitude)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(parkLatLng)
+                    .title(park.fullName)
+            )
+            boundsBuilder.include(parkLatLng) // Include park LatLng in bounds calculation
+        }
+
+        // Animate camera to fit all markers within bounds
+        val bounds = boundsBuilder.build()
+        val padding = 200
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+        mMap.animateCamera(cameraUpdate)
+    }
+
+    private fun hideSoftKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }
 
