@@ -65,6 +65,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
         toast.show()
         Log.d(TAG, "We are in Map Screen")
+        locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         spinner = view.findViewById(R.id.spinner)
         val states = State.values()
@@ -92,14 +93,14 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
 
         // setup the map
-        val mapFragment = childFragmentManager.findFragmentById(binding.mapView.id) as? SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(binding.fragmentMap.id) as? SupportMapFragment
 
         if (mapFragment == null) {
             Log.d(TAG, "++++ map fragment is null")
         }
         else {
             Log.d(TAG, "++++ map fragment is NOT null")
-            mapFragment.getMapAsync(this)
+            mapFragment?.getMapAsync(this)
         }
 
 
@@ -189,7 +190,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
         // Loop through each park and add marker to map
         for (park in parks) {
-            val parkLatLng = LatLng(park.latitude, park.longitude)
+            val parkLatLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
             mMap.addMarker(
                 MarkerOptions()
                     .position(parkLatLng)
