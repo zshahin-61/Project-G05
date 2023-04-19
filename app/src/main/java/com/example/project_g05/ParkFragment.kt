@@ -135,7 +135,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-               apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
+              // apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 apiService = RetrofitInstance.retrofitService
 
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
