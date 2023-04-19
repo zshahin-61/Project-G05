@@ -137,17 +137,22 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             try {
                apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
                 apiService = RetrofitInstance.retrofitService
-                Toast.makeText(requireContext(), "find the ${state.abbreviation} is loading", Toast.LENGTH_SHORT).show()
 
                 val response = apiService.getUsaNationalParksbyState(state.abbreviation)
+              //  Toast.makeText(requireContext(), "find the ${response} is loading", Toast.LENGTH_SHORT).show()
+
                 if (response.isSuccessful) {
+                       Toast.makeText(requireContext(), "find the ${state.abbreviation} is sussfeul", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG,"${response}")
+
                     val parks = response.body()?.data
+                    Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
 
                         // Add markers on map for each national park
                         for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            val latLng = LatLng(park.latitude, park.longitude)
                             mMap.addMarker(
                                 MarkerOptions()
                                     .position(latLng)
@@ -158,12 +163,12 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                         // Set map camera position to fit all markers
                         val builder = LatLngBounds.Builder()
                         for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            val latLng = LatLng(park.latitude, park.longitude)
                             builder.include(latLng)
                         }
                         val bounds = builder.build()
 
-                        val padding = resources.getDimensionPixelSize(16)
+                        val padding =16
                         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
                         mMap.animateCamera(cameraUpdate)
                     } else {
