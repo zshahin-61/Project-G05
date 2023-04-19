@@ -5,33 +5,26 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitInstance {
+ object RetrofitInstance {
 
+        private val httpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor(
+                HttpLoggingInterceptor.Logger { message ->
+                    println("LOG-APP: $message")
+                }).apply {
+                level= HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
 
-    private val BASE_URL:String =  "https://developer.nps.gov/"
+        private const val BASE_URL =" https://developer.nps.gov/"
 
-    // setup a client with logging
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor(
-            HttpLoggingInterceptor.Logger { message ->
-                println("LOG-APP: $message")
-            }).apply {
-            level= HttpLoggingInterceptor.Level.BODY
-        })
-        .build()
+        private val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
+        val retrofitService: ApiService by lazy {
+            retrofit.create(ApiService::class.java)
+        }
 
-    // instantiate a Retrofit instance with Moshi as the data converter
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BASE_URL)
-        .client(httpClient)
-        .build()
-
-    // update this to return an instance of the Retrofit instance associated
-    // with your base url
-    val retrofitService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
     }
-
-}
