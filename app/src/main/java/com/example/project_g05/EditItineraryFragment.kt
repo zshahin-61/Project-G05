@@ -52,6 +52,7 @@ class EditItineraryFragment : Fragment(R.layout.fragment_edit_itinerary) {
                 for (document in documents) {
                     itineraryList.add(
                         Itinerary(
+                            document.getString("parkId") ?: "N/A",
                             document.getString("parkName") ?: "N/A",
                             document.getString("Address") ?: "N/A",
                             document.getString("tripDate") ?: "N/A",
