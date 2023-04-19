@@ -8,9 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitInstance {
 
 
-    private val BASE_URL:String = "https://developer.nps.gov/"
-
-
+    private val BASE_URL:String ="https://developer.nps.gov/api/v1/"
+        //"https://developer.nps.gov/"
 
     // setup a client with logging
     private val httpClient = OkHttpClient.Builder()

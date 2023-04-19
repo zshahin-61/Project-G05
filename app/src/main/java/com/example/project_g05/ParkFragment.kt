@@ -33,6 +33,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private lateinit var apiKey: String
     private lateinit var apiService: ApiService
     private lateinit var mMap: GoogleMap
+
     private lateinit var parkList: List<NationalPark>
     private lateinit var stateList: List<State>
     private var selectedState: State? = null
@@ -83,9 +84,19 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
 
         // Set up the map
-        val mapFragment =
+
+      //  val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
+        if (mapFragment != null) {
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+            mapFragment.getMapAsync(this)
+        }else{
+            Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "Map is null")
+
+        }
+
 
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
