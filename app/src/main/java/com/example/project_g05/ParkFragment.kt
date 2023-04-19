@@ -153,7 +153,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
                         // Add markers on map for each national park
                         for (park in parkList) {
-                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            val latLng = LatLng(park.latitude, park.longitude)
                             mMap.addMarker(
                                 MarkerOptions()
                                     .position(latLng)
