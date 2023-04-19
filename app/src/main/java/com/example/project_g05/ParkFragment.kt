@@ -54,6 +54,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = FragmentParkBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,7 +91,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-
         // setup the map
         val mapFragment = childFragmentManager.findFragmentById(binding.mapView.id) as? SupportMapFragment
 
@@ -99,7 +99,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         }
         else {
             Log.d(TAG, "++++ map fragment is NOT null")
-            mapFragment?.getMapAsync(this)
+            mapFragment.getMapAsync(this)
         }
 
 
@@ -126,7 +126,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "+++ Map callback is executing...")
-
         this.mMap = googleMap
         Toast.makeText(requireContext(), "googleMap loading", Toast.LENGTH_SHORT).show()
 
@@ -138,14 +137,14 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         val intialLocation = LatLng(43.6426, -79.3871)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(intialLocation, 2.0f))
         // Set up marker click listener
-//        mMap.setOnMarkerClickListener { marker ->
-//            val park = parkList.find { it.fullName == marker.title }
-//            if (park != null) {
-//                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
-//                findNavController().navigate(action)
-//            }
-//            true
-//        }
+        mMap.setOnMarkerClickListener { marker ->
+            val park = parkList.find { it.fullName == marker.title }
+            if (park != null) {
+                val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
+                findNavController().navigate(action)
+            }
+            true
+        }
         // Set up map click listener
     }
 
@@ -154,9 +153,6 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         hideSoftKeyboard()
 
         apiService = RetrofitInstance.retrofitService
-
-
-
         // Make API call to get parks by state
         lifecycleScope.launch {
             try {
