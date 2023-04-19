@@ -15,17 +15,15 @@ import com.example.project_g05.models.NationalPark
 import com.example.project_g05.models.State
 import com.example.project_g05.networking.ApiService
 import com.example.project_g05.networking.RetrofitInstance
+import com.google.android.gms.maps.*
 import kotlinx.coroutines.launch
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
-
-class ParkFragment : Fragment(),  OnMapReadyCallback{
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.MapsInitializer
+ class ParkFragment : Fragment(),  OnMapReadyCallback {
 
     private var _binding: FragmentParkBinding? = null
     private lateinit var binding: FragmentParkBinding
@@ -38,21 +36,35 @@ class ParkFragment : Fragment(),  OnMapReadyCallback{
     private lateinit var parkList: List<NationalPark>
     private lateinit var stateList: List<State>
     private var selectedState: State? = null
+    private lateinit var mapView: MapView
 
     private val TAG = "Map_Park"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+     override fun onCreateView(
+         inflater: LayoutInflater,
+         container: ViewGroup?,
+         savedInstanceState: Bundle?
+     ): View? {
+         // Inflate the root view
+         val rootView = inflater.inflate(R.layout.fragment_park, container, false)
+         // Inflate the binding
+         binding = FragmentParkBinding.inflate(inflater, container, false)
 
-        binding = FragmentParkBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+         val mapView = rootView.findViewById<MapView>(R.id.mapFragment)
+         MapsInitializer.initialize(requireActivity())
+         mapView.onCreate(savedInstanceState)
+         mapView.getMapAsync { googleMap ->
+         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+         return rootView
+     }
+
+
+
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         val toast =
             Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
         toast.show()
@@ -85,6 +97,7 @@ class ParkFragment : Fragment(),  OnMapReadyCallback{
         }
 
         // Set up the map
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
         if (mapFragment != null) {
             childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
