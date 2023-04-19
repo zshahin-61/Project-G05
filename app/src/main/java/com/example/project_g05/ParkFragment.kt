@@ -57,8 +57,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
         toast.show()
         Log.d(TAG, "We are in Map Screen")
 
-        val spinner = view.findViewById<Spinner>(R.id.spinner)
-
+        spinner = view.findViewById(R.id.spinner)
         val states = State.values()
         val stateNames = states.map { it.fullName }
         // Initialize the Spinner adapter
@@ -83,15 +82,18 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        // Set up the map
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as? SupportMapFragment
         if (mapFragment != null) {
-            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-            mapFragment.getMapAsync(this)
-        }else{
+            mapFragment.getMapAsync { googleMap ->
+                mMap = googleMap
+                googleMap.setPadding(0, 100, 0, 0)
+                googleMap.uiSettings.isZoomControlsEnabled = true
+
+            }
+        } else {
             Toast.makeText(requireContext(), "Map is unavailable", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "Map is null")
-
         }
 
         // Find Parks button click listener
@@ -133,62 +135,56 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
-                             val apiKey = "ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
-                // Fetch parks data from API
-                val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation)
-                Toast.makeText(requireContext(), "Find ${state.abbreviation }parks is working", Toast.LENGTH_SHORT).show()
+               apiKey ="ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b"
+                apiService = RetrofitInstance.retrofitService
+                Toast.makeText(requireContext(), "find the ${state.abbreviation} is loading", Toast.LENGTH_SHORT).show()
+
+                val response = apiService.getUsaNationalParksbyState(state.abbreviation)
                 if (response.isSuccessful) {
                     val parks = response.body()?.data
                     if (parks != null) {
                         parkList = parks
-                        for (park in parks) {
+
+                        // Add markers on map for each national park
+                        for (park in parkList) {
                             val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
                             mMap.addMarker(
-                                MarkerOptions().position(latLng).title(park.fullName)
+                                MarkerOptions()
+                                    .position(latLng)
+                                    .title(park.fullName)
                             )
                         }
-                        // Zoom map to fit all markers
-                        mMap.animateCamera(
-                            CameraUpdateFactory.newLatLngBounds(getLatLngBounds(parks), 100)
-                        )
+
+                        // Set map camera position to fit all markers
+                        val builder = LatLngBounds.Builder()
+                        for (park in parkList) {
+                            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+                            builder.include(latLng)
+                        }
+                        val bounds = builder.build()
+
+                        val padding = resources.getDimensionPixelSize(16)
+                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                        mMap.animateCamera(cameraUpdate)
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "No parks found for selected state",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), "No parks found", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to fetch parks data",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Failed to get parks data", Toast.LENGTH_SHORT)
+                        .show()
+                    Log.e(TAG, "Failed to get parks data: ${response.code()}")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error fetching parks data: ${e.localizedMessage}")
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to fetch parks data",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Error: ${e.message}", e)
             }
         }
-    }
-
-
-    private fun getLatLngBounds(parks: List<NationalPark>): LatLngBounds {
-        val builder = LatLngBounds.Builder()
-        for (park in parks) {
-            val latLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
-            builder.include(latLng)
-        }
-        return builder.build()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
+
