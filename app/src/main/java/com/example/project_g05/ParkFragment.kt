@@ -39,6 +39,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.project_g05.models.UsaNationalParks
 import com.google.android.gms.maps.model.Marker
 
 
@@ -77,10 +78,11 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toast =
-            Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG)
-        toast.show()
+//        val toast =
+//            Toast.makeText(requireActivity().applicationContext, "Screen Map", Toast.LENGTH_LONG).show
+
         Log.d(TAG, "We are in Map Screen")
+        // Initialize LocationManager
         locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
@@ -88,8 +90,10 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
 
         spinner = view.findViewById(R.id.spinner)
         val states = State.values()
-        val stateNames = mutableListOf("Select State")
-        stateNames.addAll(states.map { it.fullName })
+        val stateNames = states.map { it.fullName }
+//        val stateNames = mutableListOf("Select State")
+//        stateNames.addAll(states.map { it.fullName })
+
         // Initialize the Spinner adapter
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, stateNames)
@@ -105,15 +109,15 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
                 id: Long
             ) {
                 // Update the selected state based on the position
-                selectedState = if (position > 0) states[position - 1] else null
-               // selectedState = states[position]
+                //selectedState = if (position > 0) states[position - 1] else null
+                selectedState = states[position]
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Do nothing
             }
         }
-      //  Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
+        //  Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
 
         // setup the map
         val mapFragment = childFragmentManager.findFragmentById(binding.fragmentMap.id) as? SupportMapFragment
@@ -122,9 +126,9 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
             Log.d(TAG, "++++ map fragment is null")
         }
         else {
-            Log.d(TAG, "++++ map fragment is NOT null")
+            Log.d(TAG, "++++ map fragment is NOT null googleMap.${this}")
             mapFragment?.getMapAsync(this)
-            Toast.makeText(requireContext(), "googleMap.${this}. loading", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(requireContext(), "googleMap.${this}. loading", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -132,21 +136,21 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
         // Find Parks button click listener
         binding.findParksButton.setOnClickListener {
             if (allPermissionsGranted() == true) {
+
                 if (selectedState != null) {
-                    Toast.makeText(requireContext(), "googleMap.${selectedState}. loading", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "++++ findParksButton  googleMap.${selectedState}")
 
                     findParks(selectedState!!)
                 } else {
                     Toast.makeText(requireContext(), "Please choose a state", Toast.LENGTH_SHORT).show()
                 }
-            getDeviceCurrentLocation()
-        } else {
-            // The else executes if:
-            // - this is the first time the user has installed the application
-            // - this is the first time they're clicking on that GET LOCATION BUTTOn
-            // - in the past, the user selected "only this time" in the permission popup box
-            requestPermissions(REQUIRED_PERMISSIONS_LIST, REQUEST_PERMISSION_CODE)
-        }
+
+
+                getDeviceCurrentLocation()
+            } else {
+
+                requestPermissions(REQUIRED_PERMISSIONS_LIST, REQUEST_PERMISSION_CODE)
+            }
 
         }
     }
@@ -154,25 +158,31 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "+++ Map callback is executing...")
         this.mMap = googleMap
-        Toast.makeText(requireContext(), "googleMap.${ this.mMap}. loading", Toast.LENGTH_SHORT).show()
-
+        Log.d(TAG, "++++ findParksButton  googleMap.${ this.mMap}")
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
         mMap.isTrafficEnabled = true
         val uiSettings = googleMap.uiSettings
         uiSettings.isZoomControlsEnabled = true
         uiSettings.isCompassEnabled = true
-       val intialLocation = LatLng(43.6426, -79.3871)
+
+        // Set default map location (e.g., center of the United States)
+        val intialLocation =LatLng(39.8283, -98.5795)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(intialLocation, 2.0f))
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
+            marker.showInfoWindow()
+
             val park = parkList.find { it.fullName == marker.title }
             if (park != null) {
+                Log.d(TAG, "++++ onMapReady  Park:.${ park}")
+
                 val action = ParkFragmentDirections.actionParkFragmentToParkDetailsFragment(park)
                 findNavController().navigate(action)
             }
             true
         }
-        // Set up map click listener
+
+
     }
 
     private fun findParks(state: State) {
@@ -188,6 +198,9 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
                 if (response.isSuccessful) {
                     val usaNationalParks = response.body()
                     parkList = usaNationalParks?.data ?: emptyList()
+
+                    Log.d(TAG, "++++ findParks  Park:${ parkList}")
+
                     showParksOnMap(parkList)
                 } else {
                     Toast.makeText(
@@ -216,12 +229,16 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
 
         // Loop through each park and add marker to map
         for (park in parks) {
+
             val parkLatLng = LatLng(park.latitude.toDouble(), park.longitude.toDouble())
+
             mMap.addMarker(
                 MarkerOptions()
                     .position(parkLatLng)
-                    .title(park.fullName)
+                    .title(park.fullName.toString())
+
             )
+            Log.e(TAG, "addMarker: ${park.fullName}${park}")
             boundsBuilder.include(parkLatLng) // Include park LatLng in bounds calculation
         }
 
@@ -240,6 +257,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        //  locationManager.removeUpdates(this)
     }
 
     // --------------------------------------
@@ -303,7 +321,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
         Log.d(TAG, "+++ Location update detected")
         val lat = location.latitude
         val lng = location.longitude
-      //binding.tvCoordinates.text = "Latitude: ${lat}, Longitude: ${lng}"
+        //binding.tvCoordinates.text = "Latitude: ${lat}, Longitude: ${lng}"
         Toast.makeText(requireContext(), "googleMap.${ this.mMap}. loading", Toast.LENGTH_SHORT).show()
         Log.d(TAG,  "+++ Latitude: ${lat}, Longitude: ${lng}")
 
@@ -312,7 +330,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
         val addressResultsList = mGeocoder.getFromLocation(lat, lng, 1)
         if (addressResultsList == null || addressResultsList.size == 0) {
             Log.d(TAG, "No matching addresses found")
-          //  binding.tvCoordinates.text = "No matching address found."
+            //  binding.tvCoordinates.text = "No matching address found."
 
         }
         else {
@@ -322,7 +340,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback , LocationListener{
             Log.d(TAG, "Address: ${currAddress.countryName}")
 
             // output to the ui
-           // binding.tvCoordinates.text = "Address: ${currAddress.getAddressLine(0)}"
+            // binding.tvCoordinates.text = "Address: ${currAddress.getAddressLine(0)}"
         }
 
 

@@ -43,5 +43,8 @@
         <argument
             android:name="argsSelectedItinerary"
             app:argType="com.example.project_g05.models.Itinerary" />
+        <action
+            android:id="@+id/action_editItineraryFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
     </fragment>
 </navigation>

@@ -1,65 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ParkDetailsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@color/cardview_light_background"
-    >
+    android:padding="16dp"
+    tools:context=".ParkDetailsFragment">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/purple_700"
         android:text="Product Title"
+        android:textColor="@color/purple_700"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ivImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-       />
-
-<!--    <ImageView-->
-<!--        android:id="@+id/ivImage"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        android:maxHeight="300dp"-->
-<!--        app:srcCompat="@drawable/ic_launcher_background"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:paddingTop="16dp"-->
-<!--        android:paddingBottom="8dp"/>-->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_design"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/list_images" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxHeight="300dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:srcCompat="@drawable/ic_launcher_background" />
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/rv_design"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_marginTop="15dp"-->
+    <!--        android:layout_marginEnd="15dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        tools:listitem="@layout/list_images"-->
+    <!--        android:orientation="horizontal"/>-->
 
     <TextView
         android:id="@+id/tvAddressWebsite"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:text="Address and Website:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivImage" />
 
     <TextView
         android:id="@+id/tvAddress"
@@ -73,10 +71,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAddressWebsite" />
 
-    <WebView
+    <TextView
         android:id="@+id/tvWebsite"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:autoLink="web"
         android:paddingBottom="16dp"
         android:text="Website:"
         android:textColor="@color/black"
@@ -89,44 +88,36 @@
         android:id="@+id/tvDescriptionT"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:text="Description:"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/tvWebsite"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWebsite" />
+
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:text="Product description goes here. This is where you can provide more details about the product, such as its features, benefits, and specifications."
-        android:textSize="16sp"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescriptionT"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescriptionT" />
 
-    <Button
-        android:id="@+id/btnAddItinerary1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Itinerary"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="16dp"/>
 
     <Button
         android:id="@+id/btnAddItinerary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:text="Add Itinerary"
-        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="16dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

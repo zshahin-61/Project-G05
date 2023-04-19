@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -12,41 +13,35 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.project_g05.R
+import com.example.project_g05.models.ImageModel
+import com.example.project_g05.models.Itinerary
 
 
 class ImageAdapter (
-    private val context: Context
-) :
-    RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.list_images, viewGroup, false)
+    private val context: Context,private val iamgeList: List<ImageModel>) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // UI components to be set later
+        val ivImage=itemView.findViewById<ImageView>(R.id.ivImage)
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_images, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
-        var requestOptions = RequestOptions()
-        requestOptions = requestOptions.transforms(FitCenter(), RoundedCorners(16))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val img = iamgeList[position]
+
         Glide.with(context)
-            .load("https://openai.com/content/images/2021/01/2x-no-mark-1.jpg")
-            .apply(requestOptions)
-            .skipMemoryCache(true)//for caching the image url in case phone is offline
-            .into(viewHolder.img_android)
+            .load(img?.url)
+            .into(holder.ivImage)
+
 
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return iamgeList.size
     }
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        var img_android: ImageView
-
-        init {
-            img_android =
-                view.findViewById<View>(R.id.iv_glide) as ImageView
-        }
-    }
-
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.project_g05.databinding.FragmentEditItineraryBinding
 import com.example.project_g05.models.Itinerary
@@ -114,6 +115,9 @@ class EditItineraryFragment : Fragment(R.layout.fragment_edit_itinerary) {
             .addOnSuccessListener {
                 Toast.makeText(requireContext(),"Successfully Deleted", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Successfully Deleted")
+
+                val action = EditItineraryFragmentDirections.actionEditItineraryFragmentToItineraryFragment()
+                findNavController().navigate(action)
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
