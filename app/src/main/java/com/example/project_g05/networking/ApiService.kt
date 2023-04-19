@@ -13,7 +13,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    //////////////apiCode : ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b
+  //apiCode : ooNeXJZPx1Q5JhfDWIxiRp5eBtYdlt27EPynnd8b
        // url parameter variable --> Retrofit Param annotion
     @GET("api/v1/parks/?stateCode={stateCode}&api_key={apiCode}")
     suspend fun getUsaNationalParksbyState(@Path("stateCode") categoryName:String, @Path("apiCode") apiCode:String)

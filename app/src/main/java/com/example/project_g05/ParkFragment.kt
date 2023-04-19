@@ -99,6 +99,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        Toast.makeText(requireContext(), "googleMap loooding", Toast.LENGTH_SHORT).show()
 
         // Set up marker click listener
         mMap.setOnMarkerClickListener { marker ->
@@ -125,6 +126,8 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
     private fun findParks(state: State) {
         lifecycleScope.launch {
             try {
+                Toast.makeText(requireContext(), "Find parks is working", Toast.LENGTH_SHORT).show()
+
                 // Fetch parks data from API
                 val response = RetrofitInstance.retrofitService.getUsaNationalParksbyState(state.abbreviation, apiKey)
                 if (response.isSuccessful) {
