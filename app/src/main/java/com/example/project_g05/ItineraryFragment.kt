@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -74,9 +75,9 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
                         )
                     )
                 }
-                itineraryAdapter = ItineraryListAdapter(itineraryList)
-                binding.rvItinerary.adapter = itineraryAdapter
-                binding.rvItinerary.layoutManager = LinearLayoutManager(requireContext())
+                itineraryAdapter = ItineraryListAdapter(requireContext(),itineraryList)
+                binding.lvItinerary.adapter = itineraryAdapter
+                //binding.lvItinerary.layoutManager = LinearLayoutManager(requireContext())
 
             }
             .addOnFailureListener { exception ->
@@ -85,6 +86,14 @@ class ItineraryFragment : Fragment(R.layout.fragment_itinerary) {
             }
 
 
+            binding.lvItinerary.setOnItemClickListener { adapterView, view, i, l ->
+            //Log.d(TAG, "Row clicked is: ${i}")
+            // create an association between the row that was clicked & the user id of the person you want to retrieve
+            // userid = row# + 1
+            //val idToRetrieve = i+1
+            val action = ItineraryFragmentDirections.actionItineraryFragmentToEditItineraryFragment(itineraryList[i])
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {
