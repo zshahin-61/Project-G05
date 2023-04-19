@@ -146,6 +146,7 @@ class ParkFragment : Fragment(), OnMapReadyCallback {
                     Log.d(TAG,"${response}")
 
                     val parks = response.body()?.data
+
                     Log.d(TAG,"${parks}")
                     if (parks != null) {
                         parkList = parks
